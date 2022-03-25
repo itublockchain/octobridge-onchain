@@ -1,50 +1,32 @@
-import Web3Modal from "web3modal";
-import { providerOptions } from "utils/providerOptions";
-import { useState } from "react";
-import { ethers } from "ethers";
-
-const web3Modal = new Web3Modal({
-  cacheProvider: true,
-  providerOptions,
-  theme: "dark",
-});
+import { useAccounts } from "hooks/useAccounts";
+import { useRightNetwork } from "hooks/useRightNetwork";
+import { useTheme } from "hooks/useTheme";
+import { useWalletConnection } from "hooks/useWalletConnection";
+import { useWalletEvents } from "hooks/useWalletEvents";
 
 function App() {
-  const [provider, setProvider] = useState();
-  const [error, setError] = useState<any>();
-  const [library, setLibrary] = useState<any>();
-  const [account, setAccount] = useState<any>();
-  const [chainId, setChainId] = useState<any>();
+  const { connectWallet, disconnect } = useWalletConnection({
+    autologin: true,
+  });
+  const { chainId, address } = useAccounts();
+  const { currentTheme, toggleTheme } = useTheme();
 
-  const connectWallet = async () => {
-    try {
-      const provider = await web3Modal.connect();
-      const library = new ethers.providers.Web3Provider(provider);
-      const accounts = await library.listAccounts();
-      const network = await library.getNetwork();
-      setProvider(provider);
-      setLibrary(library);
-      if (accounts) setAccount(accounts[0]);
-      setChainId(network.chainId);
-    } catch (error) {
-      setError(error);
-    }
-  };
+  const { isRightNetwork, res } = useRightNetwork();
 
-  const disconnect = async () => {
-    await web3Modal.clearCachedProvider();
-  };
+  useWalletEvents();
 
   return (
-    <div>
+    <div className={currentTheme}>
       <button onClick={connectWallet}>Connect</button>
       <button onClick={disconnect}>Disconnect</button>
+      <button onClick={toggleTheme}>Toggle Theme</button>
       <div>
-        {"Account"} {account}
+        {"Account address"} {address}
       </div>
       <div>
         {"Chain Id"} {chainId}
       </div>
+      <button onClick={res?.fn}>Switch</button>
     </div>
   );
 }
