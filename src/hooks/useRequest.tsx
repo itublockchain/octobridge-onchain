@@ -19,29 +19,20 @@ export const useRequest = (
         setLoading(true);
         onStart?.();
         const res = await func?.(...args);
-        setTimeout(() => {
-          setLoading(false);
-        }, 3000);
+        setLoading(false);
         onFinished?.(res, ...args);
         return res;
       } catch (err: any) {
         toast(errorMsg);
         try {
-          if (IS_PROD) {
+          if (!IS_PROD) {
             console.log(...err);
           }
         } catch {}
-
-        setTimeout(() => {
-          setLoading(false);
-        }, 3000);
-
+        setLoading(false);
         onFail?.();
-        if (err.code == 4001) {
-        } else {
-          if (process.env.NODE_ENV !== "production") {
-            throw new Error(err);
-          }
+        if (!IS_PROD) {
+          throw new Error(err);
         }
       }
     },
