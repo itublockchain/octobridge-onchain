@@ -1,9 +1,10 @@
 import { ethers } from "ethers";
-import { useDispatch } from "react-redux";
+import { batch, useDispatch } from "react-redux";
 import Web3Modal from "web3modal";
 import { providerOptions } from "utils/providerOptions";
 import { setAuth, setWeb3, setWeb3Account } from "store/slicers/global";
 import { useEffect } from "react";
+import { useContracts } from "hooks/useConracts";
 
 const web3Modal = new Web3Modal({
   cacheProvider: true,
@@ -18,6 +19,8 @@ export const useWalletConnection = ({
   autologin?: boolean;
 }) => {
   const dispatch = useDispatch();
+
+  const { setContracts } = useContracts();
 
   const connectWallet = async () => {
     try {
@@ -36,9 +39,12 @@ export const useWalletConnection = ({
           address,
         })
       );
+      setContracts(provider);
       if (accounts) {
-        dispatch(setAuth(true));
-        dispatch(setWeb3Account(accounts[0]));
+        batch(() => {
+          dispatch(setAuth(true));
+          dispatch(setWeb3Account(accounts[0]));
+        });
       }
     } catch (error) {}
   };
