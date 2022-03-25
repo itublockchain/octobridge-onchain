@@ -27,3 +27,8 @@ body * {
   --ghost-bg-hover: var(--wh-steel-0);
   --ghost-bg-active: var(--wh-steel-5);
 }
+
+.app {
+  display: flex;
+  flex-direction: column;
+}

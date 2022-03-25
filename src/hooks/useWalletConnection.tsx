@@ -28,6 +28,7 @@ export const useWalletConnection = ({
       const provider = new ethers.providers.Web3Provider(connector);
       const accounts = await provider.listAccounts();
       const network = await provider.getNetwork();
+
       const signer = await provider.getSigner();
       const address = await signer.getAddress();
       dispatch(
