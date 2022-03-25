@@ -12,8 +12,18 @@ body * {
 
 .dark {
   --navbar: var(--wh-steel-90);
+  --modal-bg: var(--wh-neutral-100);
+  --modal-close: var(--wh-steel-5);
+  --ghost-bg: var(--wh-neutral-100);
+  --ghost-bg-hover: var(--wh-neutral-90);
+  --ghost-bg-active: var(--wh-neutral-80);
 }
 
 .light {
   --navbar: var(--wh-steel-5);
+  --modal-bg: var(--wh-white);
+  --modal-close: var(--wh-neural-100);
+  --ghost-bg: var(--wh-white);
+  --ghost-bg-hover: var(--wh-steel-0);
+  --ghost-bg-active: var(--wh-steel-5);
 }
