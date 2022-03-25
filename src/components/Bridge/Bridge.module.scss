@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 91.5vh;
+}
+
+.bridgeWrapper {
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-bridge);
+  padding: 60px 45px;
+  border-radius: 64px;
+  z-index: 10;
+  background-color: var(--shadow-bg);
+}
+
+@media (min-width: 768px) {
+  .bridgeWrapper {
+    width: 644px;
+  }
+}
+
+@media (max-width: 592px) {
+  .bridgeWrapper {
+    width: 95vw;
+  }
+}

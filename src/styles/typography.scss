@@ -1,0 +1,289 @@
+.title1-semibold {
+  font-weight: 600 !important;
+  font-size: 32px !important;
+  line-height: 40px !important;
+  font-style: normal !important;
+}
+
+.title1-medium {
+  @extend .title1-semibold;
+  font-weight: 500 !important;
+}
+
+.title2-semibold {
+  font-weight: 600 !important;
+  font-size: 28px !important;
+  line-height: 36px !important;
+  font-style: normal;
+}
+
+.title2-medium {
+  @extend .title2-semibold;
+  font-weight: 500 !important;
+}
+
+.title3-semibold {
+  font-weight: 600 !important;
+  font-size: 24px !important;
+  line-height: 32px !important;
+  font-style: normal !important;
+}
+
+.title3-medium {
+  @extend .title3-semibold;
+  font-weight: 500 !important;
+}
+
+.title4-semibold {
+  font-weight: 600 !important;
+  font-size: 20px !important;
+  line-height: 28px !important;
+  font-style: normal !important;
+}
+
+.title4-medium {
+  @extend .title4-semibold;
+  font-weight: 500 !important;
+}
+
+.title5-semibold {
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  line-height: 24px !important;
+  font-style: normal !important;
+}
+
+.title5-medium {
+  @extend .title5-semibold;
+  font-weight: 500 !important;
+}
+
+.headline-semibold {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  line-height: 24px !important;
+  font-style: normal !important;
+}
+
+.headline-medium {
+  @extend .headline-semibold;
+  font-weight: 500 !important;
+}
+
+.body1-semibold {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  font-style: normal;
+}
+
+.body1-medium {
+  @extend .body1-semibold;
+  font-weight: 500 !important;
+}
+
+.body1-regular {
+  @extend .body1-semibold;
+  font-weight: 400 !important;
+}
+
+.body2-semibold {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  font-style: normal;
+}
+
+.body2-medium {
+  @extend .body2-semibold;
+  font-weight: 500 !important;
+}
+
+.body2-regular {
+  @extend .body2-semibold;
+  font-weight: 400 !important;
+}
+
+.body2-regular-underline {
+  @extend .body2-semibold;
+  font-weight: 400 !important;
+  text-decoration: underline !important;
+}
+
+.caption-semibold {
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 16px;
+  font-style: normal;
+}
+
+.caption-medium {
+  @extend .caption-semibold;
+  font-weight: 500 !important;
+}
+
+.caption-regular {
+  @extend .caption-semibold;
+  font-weight: 400 !important;
+}
+
+// MIXINS
+@mixin font($size, $line) {
+  font-size: $size;
+  line-height: $line;
+}
+
+// Title 1
+@mixin title1 {
+  @include font(2rem, 1.25);
+}
+
+@mixin title1-semibold {
+  @include title1;
+  font-weight: 600;
+}
+
+@mixin title1-medium {
+  @include title1;
+  font-weight: 500;
+}
+
+// Title 2
+@mixin title2 {
+  @include font(1.75rem, 1.286);
+}
+
+@mixin title2-semibold {
+  @include title2;
+  font-weight: 600;
+}
+
+@mixin title2-medium {
+  @include title2;
+  font-weight: 500;
+}
+
+// Title 3
+@mixin title3 {
+  @include font(1.5rem, 1.3334);
+}
+
+@mixin title3-semibold {
+  @include title3;
+  font-weight: 600;
+}
+
+@mixin title3-medium {
+  @include title3;
+  font-weight: 500;
+}
+
+// Title 4
+@mixin title4 {
+  @include font(1.25rem, 1.4);
+}
+
+@mixin title4-semibold {
+  @include title4;
+  font-weight: 600;
+}
+
+@mixin title4-medium {
+  @include title4;
+  font-weight: 500;
+}
+
+// Title 5
+@mixin title5 {
+  @include font(1.125rem, 1.3334);
+}
+
+@mixin title5-semibold {
+  @include title5;
+  font-weight: 600;
+}
+
+@mixin title5-medium {
+  @include title5;
+  font-weight: 500;
+}
+
+// Headline
+@mixin headline {
+  @include font(1rem, 1.5);
+}
+
+@mixin headline-semibold {
+  @include headline;
+  font-size: 600;
+}
+
+@mixin headline-medium {
+  @include headline;
+  font-size: 500;
+}
+
+// Body 1
+@mixin body1 {
+  @include font(1rem, 1.5);
+}
+
+@mixin body1-semibold {
+  @include body1;
+  font-weight: 600;
+}
+
+@mixin body1-medium {
+  @include body1;
+  font-weight: 500;
+}
+
+@mixin body1-regular {
+  @include body1;
+  font-weight: 400;
+}
+
+// Body 2
+@mixin body2 {
+  @include font(0.875rem, 1.429);
+}
+
+@mixin body2-semibold {
+  @include body2;
+  font-weight: 600;
+}
+
+@mixin body2-medium {
+  @include body2;
+  font-weight: 500;
+}
+
+@mixin body2-regular {
+  @include body2;
+  font-weight: 400;
+}
+
+@mixin body2-regular-underline {
+  @include body2-regular;
+  text-decoration: underline;
+}
+
+// Caption
+@mixin caption {
+  @include font(0.75rem, 1.3334);
+}
+
+@mixin caption-semibold {
+  @include caption;
+  font-weight: 600;
+}
+
+@mixin caption-medium {
+  @include caption;
+  font-weight: 500;
+}
+
+@mixin caption-regular {
+  @include caption;
+  font-weight: 400;
+}
