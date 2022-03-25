@@ -1,6 +1,33 @@
 .wrapper {
   display: flex;
+  align-items: center;
   width: 100%;
   justify-content: space-between;
   padding: 12px 24px;
+}
+
+.logo {
+  width: 120px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+}
+
+.buttonEach {
+  margin-right: 1rem;
+}
+
+.networkButton {
+  margin-right: 1rem;
+}
+
+@keyframes animation {
+  from {
+    width: 40px;
+  }
+  to {
+    width: 80px;
+  }
 }

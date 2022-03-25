@@ -1,5 +1,6 @@
 import {
   cloneElement,
+  ComponentPropsWithoutRef,
   Dispatch,
   forwardRef,
   isValidElement,
@@ -11,7 +12,7 @@ import {
 import { clsnm } from "utils/clsnm";
 import styles from "./Icon.module.scss";
 
-interface Props {
+interface Props extends ComponentPropsWithoutRef<"div"> {
   size?: number;
   className?: string;
   children: ReactNode;
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const Icon = (
-  { size = 20, className, children, onClick }: Props,
+  { size = 20, className, children, onClick, ...props }: Props,
   ref: RefObject<HTMLDivElement>
 ) => {
   const childrenWithProps = () => {
@@ -33,7 +34,12 @@ const Icon = (
   };
 
   return (
-    <div ref={ref} onClick={onClick} className={clsnm(styles.icon, className)}>
+    <div
+      ref={ref}
+      onClick={onClick}
+      className={clsnm(styles.icon, className)}
+      {...props}
+    >
       {childrenWithProps?.()}
     </div>
   );

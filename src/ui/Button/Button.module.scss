@@ -1,0 +1,272 @@
+@use "sass:map";
+@use "../../styles/typography.scss";
+
+@mixin padding($y, $x) {
+  padding: calc(#{$y} - 1px) calc(#{$x} - 1px);
+}
+
+@mixin btnStyle($map) {
+  background-color: map.get($map, "bg");
+  $border: map.get($map, "border");
+  border-color: if($border, $border, null);
+  color: map.get($map, "color");
+}
+
+@mixin btn($initial, $hover, $active, $focus, $disabled) {
+  @include btnStyle($initial);
+
+  &:hover {
+    transform: scale(1.02);
+    @include btnStyle($hover);
+  }
+
+  &:active {
+    @include btnStyle($active);
+  }
+
+  &:focus {
+    $border-focus: map.get($focus, "border");
+    border-color: $border-focus;
+    box-shadow: if($border-focus, 0 0 0 1px $border-focus, null);
+  }
+
+  &:disabled {
+    @include btnStyle($disabled);
+  }
+}
+
+@mixin btnContained($color) {
+  @include btn(
+    $initial: (
+      bg: var(--wh-#{$color}-70),
+      border: transparent,
+      color: var(--wh-white),
+    ),
+    $hover: (
+      bg: var(--wh-#{$color}-60),
+    ),
+    $active: (
+      bg: var(--wh-#{$color}-50),
+    ),
+    $focus: (
+      border: var(--wh-#{$color}-70),
+    ),
+    $disabled: (
+      bg: var(--wh-#{$color}-20),
+    )
+  );
+}
+
+@mixin btnOutlined($color) {
+  @include btn(
+    $initial: (
+      bg: var(--wh-#{$color}-0),
+      border: var(--wh-#{$color}-5),
+      color: var(--wh-#{$color}-60),
+    ),
+    $hover: (
+      bg: var(--wh-#{$color}-5),
+      border: var(--wh-#{$color}-10),
+    ),
+    $active: (
+      bg: var(--wh-#{$color}-10),
+      border: var(--wh-#{$color}-20),
+    ),
+    $focus: (
+      border: var(--wh-#{$color}-20),
+    ),
+    $disabled: (
+      bg: var(--wh-neutral-0),
+      border: var(--wh-neutral-10),
+      color: var(--wh-neutral-40),
+    )
+  );
+}
+
+.btn {
+  cursor: pointer;
+  &:where(.primary) {
+    &.contained {
+      @include btnContained(blue);
+    }
+
+    &.outlined {
+      @include btnOutlined(blue);
+    }
+  }
+
+  &:where(.secondary) {
+    &.contained {
+      @include btnContained(steel);
+    }
+
+    &.outlined {
+      @include btn(
+        $initial: (
+          bg: var(--wh-neutral-0),
+          border: var(--wh-steel-10),
+          color: var(--wh-steel-70),
+        ),
+        $hover: (
+          bg: var(--wh-steel-0),
+        ),
+        $active: (
+          bg: var(--wh-steel-5),
+        ),
+        $focus: (
+          border: var(--wh-steel-10),
+        ),
+        $disabled: (
+          bg: var(--wh-neutral-0),
+          border: var(--wh-neutral-10),
+          color: var(--wh-neutral-40),
+        )
+      );
+    }
+  }
+
+  &:where(.danger) {
+    &.contained {
+      @include btnContained(red);
+    }
+
+    &.outlined {
+      @include btnOutlined(red);
+    }
+  }
+
+  &:where(.success) {
+    &.contained {
+      @include btnContained(green);
+    }
+
+    &.outlined {
+      @include btnOutlined(green);
+    }
+  }
+
+  &:where(.ghost-light) {
+    @include btn(
+      $initial: (
+        bg: transparent,
+        border: transparent,
+        color: var(--wh-black),
+      ),
+      $hover: (
+        bg: var(--wh-steel-0),
+      ),
+      $active: (
+        bg: var(--wh-steel-5),
+      ),
+      $focus: (
+        border: var(--wh-steel-10),
+      ),
+      $disabled: (
+        border: var(--wh-neutral-10),
+        color: var(--wh-neutral-40),
+      )
+    );
+  }
+
+  &:where(.ghost-dark) {
+    @include btn(
+      $initial: (
+        bg: transparent,
+        border: transparent,
+        color: var(--wh-white),
+      ),
+      $hover: (
+        bg: var(--wh-blue-90),
+      ),
+      $active: (
+        bg: var(--wh-blue-80),
+      ),
+      $focus: (
+        border: var(--wh-blue-70),
+      ),
+      $disabled: (
+        border: var(--wh-neutral-10),
+        color: var(--wh-neutral-40),
+      )
+    );
+  }
+}
+
+.btn {
+  @include typography.body2-regular;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: var(--shadow-main);
+
+  &.s {
+    @include padding(0.375rem, 0.75rem);
+    border-radius: 1rem;
+  }
+
+  &.m {
+    @include padding(0.5rem, 1rem);
+    border-radius: 1rem;
+  }
+
+  &.s,
+  &.m {
+    & .startIcon,
+    & .endIcon {
+      font-size: 1.429em;
+    }
+  }
+
+  &.l {
+    @include typography.body1-medium;
+    @include padding(0.65rem, 1.25rem);
+    border-radius: 30px;
+  }
+
+  &.xl {
+    @include typography.body1-medium;
+    @include padding(0.75rem, 1.5rem);
+    border-radius: 30px;
+  }
+
+  &.l,
+  &.xl {
+    & .startIcon,
+    & .endIcon {
+      font-size: 1.5em;
+    }
+  }
+
+  &:global(.loading),
+  &:disabled {
+    pointer-events: none;
+    user-select: none;
+  }
+
+  &:global(.loading) {
+    color: transparent;
+  }
+}
+
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.startIcon,
+.endIcon {
+  display: inline-flex;
+}
+
+.startIconMargin {
+  margin-right: 0.625rem;
+}
+
+.endIconMargin {
+  margin-left: 0.625rem;
+}
