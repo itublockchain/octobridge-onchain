@@ -13,7 +13,16 @@ type TypographyVariants =
   | "body2"
   | "caption";
 
-type TypographyWeights = "semibold" | "medium" | "regular";
+type TypographyWeights =
+  | "thin"
+  | "light"
+  | "ultralight"
+  | "semibold"
+  | "medium"
+  | "regular"
+  | "bold"
+  | "heavy"
+  | "black";
 
 type TypographyOwnProps = {
   as?: React.ElementType;

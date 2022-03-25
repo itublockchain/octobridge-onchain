@@ -1,5 +1,6 @@
 .text {
-  font-family: "SF Pro", sans-serif;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Open Sans",
+    sans-serif;
   color: var(--text);
 }
 
@@ -8,18 +9,33 @@
 }
 
 // Weight
-.semibold {
-  font-weight: 600;
+.thin {
+  font-weight: 100;
 }
-
-.medium {
-  font-weight: 500;
+.ultralight {
+  font-weight: 200;
 }
-
+.light {
+  font-weight: 300;
+}
 .regular {
   font-weight: 400;
 }
-
+.medium {
+  font-weight: 500;
+}
+.semibold {
+  font-weight: 600;
+}
+.bold {
+  font-weight: 700;
+}
+.heavy {
+  font-weight: 800;
+}
+.black {
+  font-weight: 900;
+}
 // Variant
 .title1 {
   font-size: 2rem;

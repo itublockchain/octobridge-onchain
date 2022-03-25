@@ -1,11 +1,15 @@
+import { Typography } from "ui";
+import { Container } from "ui/Container/Container";
 import styles from "./Navbar.module.scss";
 
 const Navbar = () => {
   return (
-    <div className={styles.wrapper}>
+    <Container maxWidth={1200} className={styles.wrapper}>
+      <Typography variant="title4" weight="light">
+        logo
+      </Typography>
       <div>logo</div>
-      <div>logo</div>
-    </div>
+    </Container>
   );
 };
 
