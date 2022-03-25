@@ -17,6 +17,7 @@ body * {
   --ghost-bg: var(--wh-neutral-100);
   --ghost-bg-hover: var(--wh-neutral-90);
   --ghost-bg-active: var(--wh-neutral-80);
+  --text: var(--wh-white);
 }
 
 .light {
@@ -26,6 +27,7 @@ body * {
   --ghost-bg: var(--wh-white);
   --ghost-bg-hover: var(--wh-steel-0);
   --ghost-bg-active: var(--wh-steel-5);
+  --text: var(--wh-black);
 }
 
 .app {
