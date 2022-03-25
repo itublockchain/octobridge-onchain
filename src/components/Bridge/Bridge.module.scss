@@ -15,6 +15,15 @@
   background-color: var(--shadow-bg);
 }
 
+.networkWrapper {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  margin-top: 12px;
+  border-radius: 32px;
+  border: 0.8px solid #707070;
+}
+
 @media (min-width: 768px) {
   .bridgeWrapper {
     width: 644px;
