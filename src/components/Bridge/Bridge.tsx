@@ -156,6 +156,7 @@ const Bridge = () => {
             </div>
             <div className={styles.inputWrapper}>
               <input
+                style={{ opacity: "0.2" }}
                 value={amountIn}
                 readOnly
                 className={styles.input}
