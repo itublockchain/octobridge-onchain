@@ -24,6 +24,16 @@ export const useWalletConnection = ({
 
   const connectWallet = async () => {
     try {
+      let arr = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        if (localStorage.key(i)?.includes("-walletlink")) {
+          arr.push(localStorage.key(i));
+        }
+      }
+      for (let i = 0; i < arr.length; i++) {
+        localStorage.removeItem(arr[i] as any);
+      }
+
       const connector = await web3Modal.connect();
       const provider = new ethers.providers.Web3Provider(connector);
       const accounts = await provider.listAccounts();
