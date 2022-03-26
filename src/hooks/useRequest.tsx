@@ -32,7 +32,7 @@ export const useRequest = (
         setLoading(false);
         onFail?.();
         if (!IS_PROD) {
-          throw new Error(err);
+          //throw new Error(err);
         }
       }
     },

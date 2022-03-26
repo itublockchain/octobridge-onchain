@@ -20,9 +20,9 @@ type GlobalState = {
 const initialState: GlobalState = {
   auth: false,
   theme:
-    (localStorage.getItem("theme") as ThemeTypes) === "dark"
-      ? ThemeTypes.dark
-      : ThemeTypes.light,
+    (localStorage.getItem("theme") as ThemeTypes) === "light"
+      ? ThemeTypes.light
+      : ThemeTypes.dark,
   web3: {
     signer: null,
     provider: null,

@@ -10,14 +10,29 @@ import { useWalletConnection } from "hooks/useWalletConnection";
 import { parseAddress } from "utils/parseAddress";
 import { IoMdCard, IoMdMoon, IoMdPerson, IoMdSunny } from "react-icons/io";
 import { useTheme } from "hooks/useTheme";
+import { useMemo } from "react";
+import { CHAINS } from "contract/chains";
+import { NETWORK_IMAGE_MAP } from "contract/networks";
+import Unknown from "assets/images/unknown.png";
 
 const Navbar = () => {
-  const { auth, address } = useAccounts();
-  const { isRightNetwork, res } = useRightNetwork();
+  const { auth, address, chainId } = useAccounts();
   const { connectWallet } = useWalletConnection({
     autologin: false,
   });
   const { currentTheme, toggleTheme } = useTheme();
+
+  const network = useMemo(() => {
+    let network = null;
+    for (let i = 0; i < CHAINS.length; i++) {
+      const item = CHAINS[i];
+      if (item.chainId == chainId) {
+        network = item;
+        break;
+      }
+    }
+    return network;
+  }, [chainId]);
 
   return (
     <Container maxWidth={1200} className={styles.wrapper}>
@@ -27,34 +42,20 @@ const Navbar = () => {
       />
       <div className={styles.buttons}>
         {auth ? (
-          <>
-            {isRightNetwork ? (
-              <Button
-                className={styles.networkButton}
-                size="l"
-                variant="contained"
-                color="secondary"
-              >
-                <img
-                  src={Avax}
-                  style={{ marginRight: "0.75rem" }}
-                  width={24}
-                  height={24}
-                />
-                Avalanche
-              </Button>
-            ) : (
-              <Button
-                onClick={res?.fn}
-                className={styles.buttonEach}
-                size="l"
-                variant="contained"
-                color="secondary"
-              >
-                Wrong Network
-              </Button>
-            )}
-          </>
+          <Button
+            className={styles.networkButton}
+            size="l"
+            variant="contained"
+            color="secondary"
+          >
+            <img
+              src={NETWORK_IMAGE_MAP?.[network?.name] || Unknown}
+              style={{ marginRight: "0.75rem" }}
+              width={24}
+              height={24}
+            />
+            {network?.name}
+          </Button>
         ) : null}
 
         <Button

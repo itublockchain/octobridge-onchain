@@ -53,7 +53,7 @@
       border: var(--wh-#{$color}-70),
     ),
     $disabled: (
-      bg: var(--wh-#{$color}-20),
+      bg: var(--wh-#{$color}-70),
     )
   );
 }
@@ -245,6 +245,7 @@
   &:disabled {
     pointer-events: none;
     user-select: none;
+    opacity: 0.5;
   }
 
   &:global(.loading) {

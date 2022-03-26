@@ -1,16 +1,21 @@
 .wrapper {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  max-height: 600px;
+  max-width: max-content;
+  margin: auto;
+  margin-top: 30px;
   flex: 1;
 }
 
 .bridgeWrapper {
+  position: relative;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-bridge);
-  padding: 60px 45px;
+  padding: 30px 32px;
   border-radius: 64px;
   z-index: 10;
   background-color: var(--shadow-bg);
@@ -22,7 +27,7 @@
   margin-top: 20px;
   width: 100%;
   justify-content: space-between;
-  padding: 12px 36px;
+  padding: 6px 36px;
   border-radius: 32px;
   border: 0.8px solid #707070;
   cursor: pointer;
@@ -39,7 +44,7 @@
   margin-top: 20px;
   width: 100%;
   justify-content: space-between;
-  padding: 12px 36px;
+  padding: 6px 36px;
   padding-right: 20px;
   border-radius: 32px;
   border: 0.8px solid #707070;
@@ -62,12 +67,13 @@
   border: none !important;
   outline: none;
   height: 100%;
-  font-size: 24px;
+  font-size: 20px;
   width: 100%;
   background-color: transparent;
   color: var(--text);
 }
 .data {
+  z-index: 100;
   display: flex;
   flex-direction: column;
 }
@@ -75,18 +81,14 @@
 .exchange {
   display: flex;
   justify-content: center;
-  background-color: var(--wh-red-70);
 
-  &:hover {
-    background-color: var(--wh-red-80);
-  }
-
-  margin-top: 1rem;
+  margin-top: 0.5rem;
+  transform: translateY(12px);
   width: max-content;
   margin-left: auto;
   margin-right: auto;
   padding: 0.5rem;
-  color: var(--wh-white);
+  color: var(--text);
   border-radius: 50%;
   cursor: pointer;
 }
@@ -182,4 +184,112 @@
   & svg {
     margin-left: 8px;
   }
+}
+
+.l1 {
+  width: 180px;
+  position: absolute;
+  left: 50px;
+  top: 0px;
+  transform: translate(-50%, -50%);
+  animation: anim1 infinite linear 5s;
+  animation-delay: 1s;
+}
+@keyframes anim1 {
+  0% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+  50% {
+    transform: rotate(-10deg) translate(-50%, -50%);
+  }
+  100% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+}
+@keyframes anim2 {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes anim3 {
+  0% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+  50% {
+    transform: rotate(10deg) translate(-50%, -50%);
+  }
+  100% {
+    transform: rotate(0deg) translate(-50%, -50%);
+  }
+}
+@keyframes anim4 {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.l2 {
+  width: 250px;
+  position: absolute;
+  left: -50px;
+  top: 120px;
+  transform: translate(-50%, -50%);
+  animation: anim1 infinite linear 5s;
+}
+.l3 {
+  width: 220px;
+  position: absolute;
+  left: -200px;
+  top: 250px;
+  animation: anim2 infinite linear 5s;
+  animation-delay: 2s;
+}
+.l4 {
+  width: 200px;
+  position: absolute;
+  left: -100px;
+  bottom: -50px;
+  animation: anim2 infinite linear 5s;
+}
+
+.r1 {
+  width: 180px;
+  position: absolute;
+  right: -100px;
+  top: 20px;
+  transform: translate(-50%, -50%);
+  animation: anim3 infinite linear 5s;
+}
+.r2 {
+  width: 250px;
+  position: absolute;
+  right: -200px;
+  top: -10px;
+  animation: anim4 infinite linear 5s;
+}
+.r3 {
+  width: 250px;
+  position: absolute;
+  right: -220px;
+  top: 250px;
+  animation: anim4 infinite linear 5s;
+}
+.r4 {
+  width: 200px;
+  position: absolute;
+  bottom: -80px;
+  right: -120px;
+  animation: anim4 infinite linear 5s;
 }

@@ -4,6 +4,8 @@
 
 body {
   margin: 0;
+  max-height: 100vh;
+  overflow-y: hidden;
 }
 
 .web3modal-modal-lightbox {
@@ -47,4 +49,9 @@ body * {
   flex-direction: column;
   background: var(--bg) 0% 0% no-repeat padding-box;
   background-size: cover;
+}
+
+.web3modal-modal-card {
+  display: flex;
+  flex-direction: column-reverse;
 }
