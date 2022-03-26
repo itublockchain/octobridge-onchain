@@ -1,6 +1,5 @@
 {
-  "name": "tripleweb",
-  "homepage": "https://itublockchain.github.io/ava-hack-barca-frontend/",
+  "name": "ava-hack-barca-frontend",
   "version": "0.1.0",
   "private": true,
   "author": {
@@ -39,7 +38,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "npm run build && gh-pages -d build"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
