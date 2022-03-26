@@ -17,3 +17,7 @@ export const apiGetTokens = (params: any) => {
 export const apiSubmitTxn = (data: any) => {
   return axios({ method: "post", url: "/submitTx", data });
 };
+
+export const apiRegisterToken = (data: any) => {
+  return axios({ method: "post", url: "/registerToken", data });
+};

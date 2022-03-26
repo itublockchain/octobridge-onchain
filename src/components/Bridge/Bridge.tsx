@@ -9,7 +9,12 @@ import { CgArrowsExchangeV } from "react-icons/cg";
 import { TOKENS } from "contract/tokenList";
 import { NETWORK_IMAGE_MAP } from "contract/networks";
 import { clsnm } from "utils/clsnm";
-import { apiGetNetworks, apiGetTokens, apiSubmitTxn } from "services/request";
+import {
+  apiGetNetworks,
+  apiGetTokens,
+  apiRegisterToken,
+  apiSubmitTxn,
+} from "services/request";
 import ARML1 from "assets/images/arms/l1.png";
 import ARML2 from "assets/images/arms/l2.png";
 import ARML3 from "assets/images/arms/l3.png";
@@ -24,6 +29,13 @@ import { MaxUint256 } from "@ethersproject/constants";
 import { useAccounts } from "hooks/useAccounts";
 import { toast } from "react-toastify";
 import { Claims } from "utils/claims";
+import Head from "assets/images/head/head.png";
+import LeftEye from "assets/images/head/left_eye_black.png";
+import RightEye from "assets/images/head/right_eye_black.png";
+import { formatEther } from "ethers/lib/utils";
+import { checkIfRightNetwork } from "utils/checkIfRightNetwork";
+import { requestChain } from "utils/requestChain";
+import { IS_PROD } from "utils/isProd";
 
 const Bridge = () => {
   const tokenFromModal = useModal();
@@ -37,7 +49,7 @@ const Bridge = () => {
   const [networkOut, setNetworkOut] = useState<any>({});
   const [focused, setFocused] = useState(false);
   const [networks, setNetworks] = useState([]);
-  const { signer, auth } = useAccounts();
+  const { signer, auth, address, chainId } = useAccounts();
 
   const [claims, setClaims] = useState<any>([]);
 
@@ -46,8 +58,6 @@ const Bridge = () => {
 
   const [tokensIn, setTokensIn] = useState([]);
   const [tokensOut, setTokensOut] = useState([]);
-
-  console.log(claims);
 
   const networksReq = useApiRequest(apiGetNetworks, {
     onSuccess: (res: any) => {
@@ -87,13 +97,18 @@ const Bridge = () => {
   );
 
   useEffect(() => {
-    networksReq.exec();
+    try {
+      networksReq.exec();
+    } catch {}
   }, []);
 
   useEffect(() => {
     try {
       if ("networkId" in networkIn) {
         tokenReq.exec({ networkId: networkIn.networkId }, "in");
+        if (auth) {
+          requestChain(networkIn?.networkId);
+        }
       }
     } catch {}
   }, [networkIn]);
@@ -109,13 +124,20 @@ const Bridge = () => {
   const submitTxnReq = useApiRequest((data, _amount) => apiSubmitTxn(data), {
     onSuccess: (res, data, _amount) => {
       const claim = new Claims(
-        networkIn?.networkId,
+        tokenIn?.originNetworkId,
         networkIn?.networkId,
         tokenIn?.address,
         _amount,
-        res.data.signedMessage,
-        res.data.tokenName,
-        res.data.tokenSymbol
+        res.data?.signedMessage,
+        res.data?.tokenName,
+        res.data?.tokenSymbol,
+        res.data?.nonce,
+        tokenIn?.originNetworkId,
+        tokenIn?.address,
+        networkOut?.networkId,
+        tokenIn?.originNetworkId,
+        networkOut?.networkId,
+        networkOut?.bridge
       );
       setClaims([...claims, claim]);
       setLoading(false);
@@ -124,6 +146,13 @@ const Bridge = () => {
     onFail: () => {
       toast("You transaction is rejected");
       setLoading(false);
+    },
+  });
+
+  const registerTokenReq = useApiRequest((data) => apiRegisterToken(data), {
+    onSuccess: (res) => {
+      toast("Token added successfully");
+      networksReq.exec();
     },
   });
 
@@ -137,6 +166,7 @@ const Bridge = () => {
       const tokenAddr = tokenIn?.address;
       const tokenAbi = [
         "function approve(address _spender, uint256 _value) public returns (bool success)",
+        "function allowance(address _owner, address _spender) public view returns (uint256 remaining)",
       ];
 
       const TOKEN_CONTRACT = new ethers.Contract(tokenAddr, tokenAbi);
@@ -146,11 +176,18 @@ const Bridge = () => {
         "function lock(uint16 _mainChain, uint16 _destination, address _tokenAddress,uint256 _amount)",
       ];
 
-      const approveTxn = await TOKEN_CONTRACT.connect(signer).approve(
-        addr,
-        MaxUint256
+      const allowanceRes = await TOKEN_CONTRACT.connect(signer).allowance(
+        address,
+        addr
       );
-      await approveTxn.wait();
+
+      if (Number(formatEther(allowanceRes)) < Number(_amount)) {
+        const approveTxn = await TOKEN_CONTRACT.connect(signer).approve(
+          addr,
+          MaxUint256
+        );
+        await approveTxn.wait();
+      }
 
       const BRIDGE_CONTRACT = new ethers.Contract(addr, abi);
       const txn = await BRIDGE_CONTRACT.connect(signer).lock(
@@ -175,17 +212,30 @@ const Bridge = () => {
 
   const claim = async () => {
     try {
-      const addr = networkOut?.bridge;
+      const claim = claims[0];
+      const addr = claim?._claimContractAddr;
       const abi = [
-        "function claim(uint16 _mainChain, uint16 _midChain, address _mainAddress, uint256 _amount,bytes memory _signature,string memory _name,string memory _symbol)",
+        "function claim(uint16 _mainChain, uint256 _nonce, uint16 _midChain, address _mainAddress, uint256 _amount,bytes memory _signature,string memory _name,string memory _symbol)",
       ];
       const BRIDGE_CONTRACT = new ethers.Contract(addr, abi);
-      const claim = claims[0];
       setClaimLoading(true);
+      if (!IS_PROD) {
+        console.log([
+          claim._mainChain,
+          claim._nonce,
+          claim._midChain,
+          tokenIn?.address,
+          ethers.utils.parseEther(claim._amount),
+          claim._signature,
+          claim._name,
+          claim._symbol,
+        ]);
+      }
       const txn = await BRIDGE_CONTRACT.connect(signer).claim(
         claim._mainChain,
+        claim._nonce,
         claim._midChain,
-        claim._mainAddress,
+        chainId !== 43113 ? claim._mainAddress : tokenIn?.address,
         ethers.utils.parseEther(claim._amount),
         claim._signature,
         claim._name,
@@ -193,6 +243,11 @@ const Bridge = () => {
       );
       await txn.wait();
       toast("Claimed successfully!");
+      registerTokenReq.exec({
+        originNetworkId: claim._originNetworkId,
+        originTokenAddress: claim._originTokenAddress,
+        currentNetworkId: claim._currentNetworkId,
+      });
       const newClaims = [];
       for (let i = 1; i < claims.length; i++) {
         newClaims.push(claims[i]);
@@ -201,7 +256,6 @@ const Bridge = () => {
       setClaimLoading(false);
     } catch (err) {
       console.log(err);
-
       setClaimLoading(false);
     }
   };
@@ -249,6 +303,11 @@ const Bridge = () => {
         items={tokensOut?.length > 0 ? tokensOut : [TOKENS[0]]}
       />
       <div className={styles.wrapper}>
+        <div className={clsnm(styles.headWrapper, styles.loading)}>
+          <img className={styles.head} src={Head} />
+          <img className={styles.leftEye} src={LeftEye} />
+          <img className={styles.rightEye} src={RightEye} />
+        </div>
         <img src={ARML1} className={styles.l1} />
         <img src={ARML2} className={styles.l2} />
         <img src={ARML3} className={styles.l3} />
@@ -321,7 +380,10 @@ const Bridge = () => {
           </div>
 
           <Icon
-            className={styles.exchange}
+            className={clsnm(
+              styles.exchange,
+              (loading || claimLoading) && styles.loading
+            )}
             onClick={() => {
               const temp = networkIn;
               setNetworkIn(networkOut);
@@ -380,7 +442,12 @@ const Bridge = () => {
           <Button
             loading={loading}
             onClick={lock}
-            disabled={tokensIn?.length <= 0 || !auth || claims?.length > 0}
+            disabled={
+              tokensIn?.length <= 0 ||
+              !auth ||
+              claims?.length > 0 ||
+              chainId !== networkIn?.networkId
+            }
             style={{ marginTop: "32px" }}
             size="xl"
             color="danger"
@@ -391,7 +458,7 @@ const Bridge = () => {
             <Button
               loading={claimLoading}
               onClick={claim}
-              disabled={!auth}
+              disabled={!auth || claims[0]._targetNetworkChainId !== chainId}
               style={{ marginTop: "12px" }}
               size="xl"
               color="danger"
@@ -464,7 +531,7 @@ const TokenModal = ({ isOpen, close, items, onClick }: any) => {
               width={32}
               height={32}
               className={styles.itemImage}
-              src={item.logoURI}
+              src={item.logoURI || Unknown}
             />
             <Typography
               className={styles.itemInner}

@@ -6,7 +6,7 @@
   max-height: 600px;
   max-width: max-content;
   margin: auto;
-  margin-top: 30px;
+  margin-top: 60px;
   flex: 1;
 }
 
@@ -91,6 +91,11 @@
   color: var(--text);
   border-radius: 50%;
   cursor: pointer;
+
+  &.loading {
+    pointer-events: none;
+    opacity: 0.5;
+  }
 }
 
 .modal {
@@ -292,4 +297,57 @@
   bottom: -80px;
   right: -120px;
   animation: anim4 infinite linear 5s;
+}
+
+.headWrapper {
+  position: absolute;
+  top: 0px;
+
+  &.loading {
+    animation: headAnimation forwards 4s;
+  }
+}
+
+@keyframes headAnimation {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-120px);
+  }
+}
+
+.head {
+  width: 200px;
+}
+
+.rightEye {
+  position: absolute;
+  right: 25px;
+  bottom: 28px;
+  width: 60px;
+  animation: eyeAnimation infinite 4s;
+}
+
+.leftEye {
+  position: absolute;
+  left: 25px;
+  bottom: 28px;
+  width: 60px;
+  animation: eyeAnimation infinite 4s;
+}
+
+@keyframes eyeAnimation {
+  0% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-3px);
+  }
+  100% {
+    transform: translateX(0px);
+  }
 }
