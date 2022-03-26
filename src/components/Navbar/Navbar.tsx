@@ -14,7 +14,7 @@ import { useTheme } from "hooks/useTheme";
 const Navbar = () => {
   const { auth, address } = useAccounts();
   const { isRightNetwork, res } = useRightNetwork();
-  const { connectWallet, disconnect } = useWalletConnection({
+  const { connectWallet } = useWalletConnection({
     autologin: false,
   });
   const { currentTheme, toggleTheme } = useTheme();

@@ -7,7 +7,7 @@ import { useEffect } from "react";
 import { useContracts } from "hooks/useConracts";
 
 const web3Modal = new Web3Modal({
-  cacheProvider: true,
+  cacheProvider: false,
   providerOptions,
   theme: "dark",
   disableInjectedProvider: false,
