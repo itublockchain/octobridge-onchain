@@ -9,6 +9,7 @@ import { useState } from "react";
 import { CgArrowsExchangeV } from "react-icons/cg";
 import { TOKENS } from "contract/tokenList";
 import { NETWORKS } from "contract/networks";
+import { clsnm } from "utils/clsnm";
 
 const Bridge = () => {
   const tokenFromModal = useModal();
@@ -20,6 +21,8 @@ const Bridge = () => {
   const [amountIn, setAmountIn] = useState("");
   const [networkIn, setNetworkIn] = useState(NETWORKS[0]);
   const [networkOut, setNetworkOut] = useState(NETWORKS[1]);
+
+  const [focused, setFocused] = useState(false);
 
   return (
     <>
@@ -84,8 +87,16 @@ const Bridge = () => {
                 <IoIosArrowDown fontSize={24} />
               </Icon>
             </div>
-            <div className={styles.inputWrapper}>
+            <div
+              className={clsnm(styles.inputWrapper, focused && styles.focus)}
+            >
               <input
+                onFocus={() => {
+                  setFocused(true);
+                }}
+                onBlur={() => {
+                  setFocused(false);
+                }}
                 value={amountIn}
                 onChange={(e) => setAmountIn(e.target.value)}
                 className={styles.input}
@@ -204,7 +215,7 @@ const NetworkModal = ({ isOpen, close, items, onClick }: any) => {
               variant="body2"
               weight="regular"
             >
-              {item.chainId}
+              Chain ID: {item.chainId}
             </Typography>
           </div>
         ))}
