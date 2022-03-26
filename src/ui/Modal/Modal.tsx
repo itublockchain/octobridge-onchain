@@ -11,14 +11,21 @@ interface ModalProps extends ComponentPropsWithoutRef<"div"> {
   disableCloseButton?: boolean;
 }
 
-const Modal = ({ isOpen, close, children, disableCloseButton }: ModalProps) => {
+const Modal = ({
+  isOpen,
+  close,
+  children,
+  disableCloseButton,
+  className,
+  ...props
+}: ModalProps) => {
   const ref = useOnClickOutside<HTMLDivElement>(() => {
     close?.(null as any);
   });
 
   return (
-    <div className={clsnm(styles.wrapper, isOpen && styles.open)}>
-      <div ref={ref} className={styles.body}>
+    <div className={clsnm(styles.wrapper, isOpen && styles.open)} {...props}>
+      <div ref={ref} className={clsnm(styles.body, className)}>
         {!disableCloseButton && (
           <Icon onClick={close} className={styles.close}>
             <MdClose />

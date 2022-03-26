@@ -12,8 +12,7 @@ body {
 
 body * {
   box-sizing: border-box;
-  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Open Sans",
-    sans-serif;
+  font-family: "Open Sans", sans-serif;
 }
 
 .dark {
@@ -23,6 +22,7 @@ body * {
   --ghost-bg: var(--wh-neutral-100);
   --ghost-bg-hover: var(--wh-neutral-90);
   --ghost-bg-active: var(--wh-neutral-80);
+  --select-hover: var(--wh-neutral-90);
   --text: var(--wh-white);
   --bg: url(../assets/images/background_dark.png);
   --shadow-bg: #1d1e31;
@@ -38,9 +38,11 @@ body * {
   --text: var(--wh-black);
   --bg: url(../assets/images/background_light.png);
   --shadow-bg: #f3f3f3;
+  --select-hover: var(--wh-steel-0);
 }
 
 .app {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--bg) 0% 0% no-repeat padding-box;

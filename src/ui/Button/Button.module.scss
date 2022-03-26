@@ -14,6 +14,7 @@
 
 @mixin btn($initial, $hover, $active, $focus, $disabled) {
   @include btnStyle($initial);
+  transition: 0.1s linear;
 
   &:hover {
     transform: scale(1.02);

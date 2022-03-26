@@ -2,7 +2,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 91.5vh;
+  height: 100%;
+  flex: 1;
 }
 
 .bridgeWrapper {
@@ -18,20 +19,125 @@
 .networkWrapper {
   display: flex;
   align-items: center;
-  height: 42px;
-  margin-top: 12px;
+  margin-top: 20px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 12px 36px;
+  border-radius: 32px;
+  border: 0.8px solid #707070;
+  cursor: pointer;
+  transition: 0.2s linear;
+  &:hover {
+    transform: scale(1.01);
+    transition: 0.2s linear;
+  }
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  justify-content: space-between;
+  padding: 12px 36px;
   border-radius: 32px;
   border: 0.8px solid #707070;
 }
 
+.inner {
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  display: flex;
+  border: none !important;
+  outline: none;
+  height: 100%;
+  font-size: 24px;
+  width: 100%;
+  background-color: transparent;
+}
+.data {
+  display: flex;
+  flex-direction: column;
+}
+
+.exchange {
+  display: flex;
+  justify-content: center;
+  background-color: var(--wh-red-70);
+
+  &:hover {
+    background-color: var(--wh-red-80);
+  }
+
+  margin-top: 1rem;
+  width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0.5rem;
+  color: var(--wh-white);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.modal {
+  width: 412px;
+  min-height: 512px;
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.icon {
+  color: var(--text);
+}
+
+.tokenWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 768px) {
   .bridgeWrapper {
-    width: 644px;
+    width: 544px;
   }
 }
 
-@media (max-width: 592px) {
+@media (max-width: 640px) {
   .bridgeWrapper {
     width: 95vw;
   }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0px !important;
+  padding: 16px 24px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--select-hover);
+  }
+}
+
+.itemInner {
+  margin-bottom: 0px;
+  margin-top: 0px;
+}
+
+.tokenWrapper {
+  margin-top: 0.1rem;
+}
+
+.header {
+  padding: 24px 24px;
+}
+
+.itemImage {
+  margin-right: 1rem;
+  border-radius: 50%;
 }
