@@ -1,3 +1,5 @@
+import Avax from "assets/images/avax.png";
+
 export const NETWORKS = [
   {
     chainId: 43113,
@@ -7,6 +9,7 @@ export const NETWORKS = [
       symbol: "AVAX",
       decimals: 18,
     },
+    logo: Avax,
     blockExplorerUrls: ["https://testnet.snowtrace.io/"],
     rpcUrls: ["https://api.avax-test.network/ext/bc/C/rpc"],
   },
