@@ -121,12 +121,14 @@ const Bridge = () => {
     } catch {}
   }, [networkOut]);
 
+  console.log(tokenIn);
+
   const submitTxnReq = useApiRequest((data, _amount) => apiSubmitTxn(data), {
     onSuccess: (res, data, _amount) => {
       const claim = new Claims(
         tokenIn?.originNetworkId,
         networkIn?.networkId,
-        tokenIn?.address,
+        chainId === 43113 ? tokenIn?.address : tokenIn?.originAddress,
         _amount,
         res.data?.signedMessage,
         res.data?.tokenName,
@@ -210,6 +212,8 @@ const Bridge = () => {
     }
   };
 
+  console.log(claims);
+
   const claim = async () => {
     try {
       const claim = claims[0];
@@ -235,7 +239,7 @@ const Bridge = () => {
         claim._mainChain,
         claim._nonce,
         claim._midChain,
-        chainId !== 43113 ? claim._mainAddress : tokenIn?.address,
+        claim._mainAddress,
         ethers.utils.parseEther(claim._amount),
         claim._signature,
         claim._name,
