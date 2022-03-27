@@ -235,6 +235,7 @@ const Bridge = () => {
       setLoading(false);
       setAmountIn("");
     } catch (err) {
+      toast("Transaction failed");
       console.log(err);
     }
   };

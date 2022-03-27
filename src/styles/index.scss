@@ -52,8 +52,8 @@ body * {
 }
 
 .web3modal-modal-card {
-  display: flex;
-  flex-direction: column-reverse;
+  display: flex !important;
+  flex-direction: column-reverse !important;
 }
 
 .Toastify {
