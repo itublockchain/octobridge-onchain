@@ -6,6 +6,7 @@
     "name": "Farhad Asgarov",
     "email": "fasgarov2002@gmail.com"
   },
+  "homepage": "https://itublockchain.github.io/octobridge-onchain/",
   "dependencies": {
     "@coinbase/wallet-sdk": "3.0.5",
     "@reduxjs/toolkit": "^1.6.2",
