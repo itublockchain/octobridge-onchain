@@ -14,7 +14,7 @@ import { useMemo } from "react";
 import { CHAINS } from "contract/chains";
 import { NETWORK_IMAGE_MAP } from "contract/networks";
 import Unknown from "assets/images/unknown.png";
-import { useNavigate } from "react-router-dom";
+/* import { useNavigate } from "react-router-dom"; */
 
 const Navbar = () => {
   const { auth, address, chainId } = useAccounts();
@@ -22,7 +22,7 @@ const Navbar = () => {
     autologin: false,
   });
   const { currentTheme, toggleTheme } = useTheme();
-  const navigate = useNavigate();
+  /*   const navigate = useNavigate(); */
 
   const network = useMemo(() => {
     let network = null;

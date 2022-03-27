@@ -21,12 +21,13 @@ function App() {
 
   return (
     <div className={currentTheme}>
-      <BrowserRouter>
+      <MainApp />
+      {/*  <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainApp />} />
           <Route path="/nft" element={<NftBridge />} />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> */}
       <ToastContainer
         position="top-right"
         autoClose={5000}

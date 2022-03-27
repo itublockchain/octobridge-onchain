@@ -252,7 +252,7 @@ const Bridge = () => {
         provider
       );
       const txn = await OCTOBRIDGE20_CONTRACT.connect(signer).claim({
-        gasLimit: 2000000,
+        gasLimit: 20000000,
       });
       await txn.wait();
       setClaimLoading(false);
