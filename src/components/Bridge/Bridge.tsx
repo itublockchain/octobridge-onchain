@@ -115,7 +115,7 @@ const Bridge = () => {
   useEffect(() => {
     try {
       if ("networkId" in networkIn) {
-        if (chainId === 43113) {
+        if (networkIn?.networkId === 43113) {
           setTokenIn(TOKENS[0]);
           setTokensIn(TOKENS);
         } else {
