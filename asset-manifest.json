@@ -1,22 +1,19 @@
 {
   "files": {
-    "main.css": "/octobridge-onchain/static/css/main.11fcf3d7.chunk.css",
-    "main.js": "/octobridge-onchain/static/js/main.7a7f8a25.chunk.js",
-    "main.js.map": "/octobridge-onchain/static/js/main.7a7f8a25.chunk.js.map",
-    "runtime-main.js": "/octobridge-onchain/static/js/runtime-main.ddfd1e56.js",
-    "runtime-main.js.map": "/octobridge-onchain/static/js/runtime-main.ddfd1e56.js.map",
+    "main.css": "/octobridge-onchain/static/css/main.ee6d527f.chunk.css",
+    "main.js": "/octobridge-onchain/static/js/main.5876987b.chunk.js",
+    "main.js.map": "/octobridge-onchain/static/js/main.5876987b.chunk.js.map",
+    "runtime-main.js": "/octobridge-onchain/static/js/runtime-main.a249c84d.js",
+    "runtime-main.js.map": "/octobridge-onchain/static/js/runtime-main.a249c84d.js.map",
     "static/css/2.f4c56af9.chunk.css": "/octobridge-onchain/static/css/2.f4c56af9.chunk.css",
-    "static/js/2.e6c40ee0.chunk.js": "/octobridge-onchain/static/js/2.e6c40ee0.chunk.js",
-    "static/js/2.e6c40ee0.chunk.js.map": "/octobridge-onchain/static/js/2.e6c40ee0.chunk.js.map",
-    "static/js/3.3c1a395c.chunk.js": "/octobridge-onchain/static/js/3.3c1a395c.chunk.js",
-    "static/js/3.3c1a395c.chunk.js.map": "/octobridge-onchain/static/js/3.3c1a395c.chunk.js.map",
+    "static/js/2.a0806bec.chunk.js": "/octobridge-onchain/static/js/2.a0806bec.chunk.js",
+    "static/js/2.a0806bec.chunk.js.map": "/octobridge-onchain/static/js/2.a0806bec.chunk.js.map",
+    "static/js/3.089f0223.chunk.js": "/octobridge-onchain/static/js/3.089f0223.chunk.js",
+    "static/js/3.089f0223.chunk.js.map": "/octobridge-onchain/static/js/3.089f0223.chunk.js.map",
     "index.html": "/octobridge-onchain/index.html",
     "static/css/2.f4c56af9.chunk.css.map": "/octobridge-onchain/static/css/2.f4c56af9.chunk.css.map",
-    "static/css/main.11fcf3d7.chunk.css.map": "/octobridge-onchain/static/css/main.11fcf3d7.chunk.css.map",
-    "static/js/2.e6c40ee0.chunk.js.LICENSE.txt": "/octobridge-onchain/static/js/2.e6c40ee0.chunk.js.LICENSE.txt",
-    "static/media/1.89133820.png": "/octobridge-onchain/static/media/1.89133820.png",
-    "static/media/2.ae3afe14.png": "/octobridge-onchain/static/media/2.ae3afe14.png",
-    "static/media/3.bcbdff67.png": "/octobridge-onchain/static/media/3.bcbdff67.png",
+    "static/css/main.ee6d527f.chunk.css.map": "/octobridge-onchain/static/css/main.ee6d527f.chunk.css.map",
+    "static/js/2.a0806bec.chunk.js.LICENSE.txt": "/octobridge-onchain/static/js/2.a0806bec.chunk.js.LICENSE.txt",
     "static/media/avax.e1fb45e8.png": "/octobridge-onchain/static/media/avax.e1fb45e8.png",
     "static/media/index.scss": "/octobridge-onchain/static/media/background_light.fd75a50e.png",
     "static/media/head.27b8262c.png": "/octobridge-onchain/static/media/head.27b8262c.png",
@@ -33,10 +30,10 @@
     "static/media/unknown.3f200bf8.png": "/octobridge-onchain/static/media/unknown.3f200bf8.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.ddfd1e56.js",
+    "static/js/runtime-main.a249c84d.js",
     "static/css/2.f4c56af9.chunk.css",
-    "static/js/2.e6c40ee0.chunk.js",
-    "static/css/main.11fcf3d7.chunk.css",
-    "static/js/main.7a7f8a25.chunk.js"
+    "static/js/2.a0806bec.chunk.js",
+    "static/css/main.ee6d527f.chunk.css",
+    "static/js/main.5876987b.chunk.js"
   ]
 }
