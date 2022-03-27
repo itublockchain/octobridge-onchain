@@ -30,15 +30,14 @@ import { toast } from "react-toastify";
 import Head from "assets/images/head/head.png";
 import LeftEye from "assets/images/head/left_eye_black.png";
 import RightEye from "assets/images/head/right_eye_black.png";
-import { arrayify, formatEther, parseEther } from "ethers/lib/utils";
+import { formatEther, parseEther } from "ethers/lib/utils";
 import { requestChain } from "utils/requestChain";
-import { IS_PROD } from "utils/isProd";
-import { useOctobridgeContract } from "hooks/useOctobridgeContract";
 import { isZero } from "utils/isZero";
 import { DEPLOYMENTS } from "contract/deployments";
-import { ADDRESSES } from "contract/adresses";
 import { LAYER_ZERO } from "contract/abi/layerZero";
 import { OCTOBRIDGE20 } from "contract/abi/octobridge20";
+
+const regexp = /^-?\d*\.?\d*$/;
 
 const Bridge = () => {
   const tokenFromModal = useModal();
@@ -356,7 +355,15 @@ const Bridge = () => {
                   setFocused(false);
                 }}
                 value={amountIn}
-                onChange={(e) => setAmountIn(e.target.value)}
+                onChange={(e) => {
+                  if (
+                    !regexp.test(e.target.value) ||
+                    e.target.value.includes("-")
+                  ) {
+                    return;
+                  }
+                  setAmountIn(e.target.value);
+                }}
                 className={styles.input}
                 placeholder={"Enter Amount"}
               />
