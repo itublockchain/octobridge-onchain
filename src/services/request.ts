@@ -21,3 +21,18 @@ export const apiSubmitTxn = (data: any) => {
 export const apiRegisterToken = (data: any) => {
   return axios({ method: "post", url: "/registerToken", data });
 };
+
+export const getCovalentUrl = ({
+  chainId,
+  address,
+}: {
+  chainId: number;
+  address: string;
+}) =>
+  `https://api.covalenthq.com/v1/${chainId}/address/${address}/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=ckey_1c56a51b5de9463fa8f4dbec5ec`;
+
+export const getTrial = async (url: any) => {
+  let response: any = await fetch(url);
+  response = response.json();
+  return response;
+};

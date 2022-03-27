@@ -32,3 +32,19 @@
     width: 80px;
   }
 }
+
+.items {
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+}
+
+.itemsItem {
+  margin-top: 1rem;
+  margin-left: 50px;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

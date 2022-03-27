@@ -44,4 +44,5 @@ export const NETWORK_IMAGE_MAP = {
   Fuji: Avax,
   Rinkeby: Rinkeby,
   "Avalanche Fuji Testnet": Avax,
+  Mumbai: "https://cryptologos.cc/logos/polygon-matic-logo.png?v=022",
 };

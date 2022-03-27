@@ -13,7 +13,6 @@ import {
   apiGetNetworks,
   apiGetTokens,
   apiRegisterToken,
-  apiSubmitTxn,
 } from "services/request";
 import ARML1 from "assets/images/arms/l1.png";
 import ARML2 from "assets/images/arms/l2.png";
@@ -28,14 +27,18 @@ import { ethers } from "ethers";
 import { MaxUint256 } from "@ethersproject/constants";
 import { useAccounts } from "hooks/useAccounts";
 import { toast } from "react-toastify";
-import { Claims } from "utils/claims";
 import Head from "assets/images/head/head.png";
 import LeftEye from "assets/images/head/left_eye_black.png";
 import RightEye from "assets/images/head/right_eye_black.png";
-import { formatEther } from "ethers/lib/utils";
-import { checkIfRightNetwork } from "utils/checkIfRightNetwork";
+import { arrayify, formatEther, parseEther } from "ethers/lib/utils";
 import { requestChain } from "utils/requestChain";
 import { IS_PROD } from "utils/isProd";
+import { useOctobridgeContract } from "hooks/useOctobridgeContract";
+import { isZero } from "utils/isZero";
+import { DEPLOYMENTS } from "contract/deployments";
+import { ADDRESSES } from "contract/adresses";
+import { LAYER_ZERO } from "contract/abi/layerZero";
+import { OCTOBRIDGE20 } from "contract/abi/octobridge20";
 
 const Bridge = () => {
   const tokenFromModal = useModal();
@@ -49,7 +52,9 @@ const Bridge = () => {
   const [networkOut, setNetworkOut] = useState<any>({});
   const [focused, setFocused] = useState(false);
   const [networks, setNetworks] = useState([]);
-  const { signer, auth, address, chainId } = useAccounts();
+  const { signer, auth, address, chainId, provider } = useAccounts();
+  const [isClaimable, setIsClaimable] = useState(false);
+  const [time, setTime] = useState(0);
 
   const [claims, setClaims] = useState<any>([]);
 
@@ -66,8 +71,8 @@ const Bridge = () => {
         arr.push(res.data[item]);
       });
       setNetworks(arr);
-      setNetworkIn(arr[0]);
-      setNetworkOut(arr[1]);
+      setNetworkIn(arr.filter((item: any) => item.networkId === 43113)[0]);
+      setNetworkOut(arr.filter((item: any) => item.networkId === 80001)[0]);
     },
   });
 
@@ -107,7 +112,7 @@ const Bridge = () => {
       if ("networkId" in networkIn) {
         tokenReq.exec({ networkId: networkIn.networkId }, "in");
         if (auth) {
-          requestChain(networkIn?.networkId);
+          requestChain(networkIn?.networkId, networkIn?.rpc, networkIn?.name);
         }
       }
     } catch {}
@@ -121,36 +126,6 @@ const Bridge = () => {
     } catch {}
   }, [networkOut]);
 
-  console.log(tokenIn);
-
-  const submitTxnReq = useApiRequest((data, _amount) => apiSubmitTxn(data), {
-    onSuccess: (res, data, _amount) => {
-      const claim = new Claims(
-        tokenIn?.originNetworkId,
-        networkIn?.networkId,
-        chainId === 43113 ? tokenIn?.address : tokenIn?.originAddress,
-        _amount,
-        res.data?.signedMessage,
-        res.data?.tokenName,
-        res.data?.tokenSymbol,
-        res.data?.nonce,
-        tokenIn?.originNetworkId,
-        tokenIn?.address,
-        networkOut?.networkId,
-        tokenIn?.originNetworkId,
-        networkOut?.networkId,
-        networkOut?.bridge
-      );
-      setClaims([...claims, claim]);
-      setLoading(false);
-      toast("You transaction is signed");
-    },
-    onFail: () => {
-      toast("You transaction is rejected");
-      setLoading(false);
-    },
-  });
-
   const registerTokenReq = useApiRequest((data) => apiRegisterToken(data), {
     onSuccess: (res) => {
       toast("Token added successfully");
@@ -158,108 +133,130 @@ const Bridge = () => {
     },
   });
 
-  const lock = async () => {
-    if (!("networkId" in networkIn) && tokenIn?.address) {
+  useEffect(() => {
+    if (!auth) {
       return;
     }
-    setLoading(true);
-    let _amount = amountIn;
+    const fetch = async () => {
+      const LAYER_ZERO_CONTRACT = new ethers.Contract(
+        DEPLOYMENTS[chainId].layerZeroAddress,
+        LAYER_ZERO,
+        provider
+      );
+
+      const res = await LAYER_ZERO_CONTRACT.txs(address);
+
+      if (!isZero(res.amount)) {
+        setIsClaimable(true);
+      } else {
+        setIsClaimable(false);
+      }
+    };
+    fetch();
+  }, [provider, chainId]);
+
+  useEffect(() => {
+    if (!auth || !chainId || !provider) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const fetch = async () => {
+        const LAYER_ZERO_CONTRACT = new ethers.Contract(
+          DEPLOYMENTS[chainId].layerZeroAddress,
+          LAYER_ZERO,
+          provider
+        );
+        console.log("fetched");
+
+        const res = await LAYER_ZERO_CONTRACT.txs(address);
+
+        if (!isZero(res.amount)) {
+          setIsClaimable(true);
+        } else {
+          setIsClaimable(false);
+        }
+      };
+      fetch();
+      setTime(time + 1);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [auth, chainId, provider, time]);
+
+  const lock = async () => {
+    if (!auth || !tokenIn.address || !networkIn.networkId || !chainId) {
+      return;
+    }
     try {
+      setLoading(true);
+
+      const OCTOBRIDGE20_CONTRACT = new ethers.Contract(
+        DEPLOYMENTS[chainId].erc20BridgeAddress,
+        OCTOBRIDGE20,
+        provider
+      );
+
+      const tokens = await OCTOBRIDGE20_CONTRACT?.tokens(tokenIn.address);
+      let originChain = tokens[0];
+      let originAddress = tokens[1];
+
+      if (originChain == 0) {
+        originChain = networkIn?.layerZero?.id;
+      }
+      if (isZero(originAddress)) {
+        originAddress = tokenIn.address;
+      }
+
       const tokenAddr = tokenIn?.address;
       const tokenAbi = [
         "function approve(address _spender, uint256 _value) public returns (bool success)",
         "function allowance(address _owner, address _spender) public view returns (uint256 remaining)",
       ];
-
       const TOKEN_CONTRACT = new ethers.Contract(tokenAddr, tokenAbi);
-
-      const addr = networkIn?.bridge;
-      const abi = [
-        "function lock(uint16 _mainChain, uint16 _destination, address _tokenAddress,uint256 _amount)",
-      ];
 
       const allowanceRes = await TOKEN_CONTRACT.connect(signer).allowance(
         address,
-        addr
+        DEPLOYMENTS[chainId].erc20BridgeAddress
       );
 
-      if (Number(formatEther(allowanceRes)) < Number(_amount)) {
+      if (Number(formatEther(allowanceRes)) < Number(amountIn)) {
         const approveTxn = await TOKEN_CONTRACT.connect(signer).approve(
-          addr,
+          DEPLOYMENTS[chainId].erc20BridgeAddress,
           MaxUint256
         );
         await approveTxn.wait();
       }
 
-      const BRIDGE_CONTRACT = new ethers.Contract(addr, abi);
-      const txn = await BRIDGE_CONTRACT.connect(signer).lock(
-        networkIn.networkId,
-        networkOut.networkId,
+      const txn = await OCTOBRIDGE20_CONTRACT?.connect(signer).lock(
+        originChain,
+        networkOut?.layerZero?.id,
+        networkOut?.layerZero?.id,
         tokenIn.address,
-        ethers.utils.parseEther(_amount)
+        parseEther(amountIn),
+        DEPLOYMENTS[networkOut.networkId]?.layerZeroAddress,
+        { value: parseEther("0.5") }
       );
       await txn.wait();
-      submitTxnReq.exec(
-        {
-          txId: txn?.hash,
-          networkId: networkIn?.networkId,
-        },
-        _amount
-      );
+      setLoading(false);
     } catch (err) {
       console.log(err);
-      setLoading(false);
     }
   };
 
-  console.log(claims);
-
   const claim = async () => {
     try {
-      const claim = claims[0];
-      const addr = claim?._claimContractAddr;
-      const abi = [
-        "function claim(uint16 _mainChain, uint256 _nonce, uint16 _midChain, address _mainAddress, uint256 _amount,bytes memory _signature,string memory _name,string memory _symbol)",
-      ];
-      const BRIDGE_CONTRACT = new ethers.Contract(addr, abi);
       setClaimLoading(true);
-      if (!IS_PROD) {
-        console.log([
-          claim._mainChain,
-          claim._nonce,
-          claim._midChain,
-          tokenIn?.address,
-          ethers.utils.parseEther(claim._amount),
-          claim._signature,
-          claim._name,
-          claim._symbol,
-        ]);
-      }
-      const txn = await BRIDGE_CONTRACT.connect(signer).claim(
-        claim._mainChain,
-        claim._nonce,
-        claim._midChain,
-        claim._mainAddress,
-        ethers.utils.parseEther(claim._amount),
-        claim._signature,
-        claim._name,
-        claim._symbol
+      const OCTOBRIDGE20_CONTRACT = new ethers.Contract(
+        DEPLOYMENTS[chainId].erc20BridgeAddress,
+        OCTOBRIDGE20,
+        provider
       );
-      await txn.wait();
-      toast("Claimed successfully!");
-      registerTokenReq.exec({
-        originNetworkId: claim._originNetworkId,
-        originTokenAddress: claim._originTokenAddress,
-        currentNetworkId: claim._currentNetworkId,
+      const txn = await OCTOBRIDGE20_CONTRACT.connect(signer).claim({
+        gasLimit: 2000000,
       });
-      const newClaims = [];
-      for (let i = 1; i < claims.length; i++) {
-        newClaims.push(claims[i]);
-      }
-      setClaims(newClaims);
+      await txn.wait();
       setClaimLoading(false);
     } catch (err) {
-      console.log(err);
       setClaimLoading(false);
     }
   };
@@ -445,7 +442,7 @@ const Bridge = () => {
           </div>
           <Button
             loading={loading}
-            onClick={lock}
+            onClick={async () => await lock()}
             disabled={
               tokensIn?.length <= 0 ||
               !auth ||
@@ -458,11 +455,11 @@ const Bridge = () => {
           >
             Transfer
           </Button>
-          {claims.length > 0 && (
+          {isClaimable && (
             <Button
               loading={claimLoading}
-              onClick={claim}
-              disabled={!auth || claims[0]._targetNetworkChainId !== chainId}
+              onClick={async () => await claim()}
+              disabled={!auth}
               style={{ marginTop: "12px" }}
               size="xl"
               color="danger"
@@ -476,7 +473,7 @@ const Bridge = () => {
   );
 };
 
-const NetworkModal = ({ isOpen, close, items, onClick }: any) => {
+export const NetworkModal = ({ isOpen, close, items, onClick }: any) => {
   return (
     <Modal
       disableCloseButton

@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { useAccounts } from "hooks/useAccounts";
+import { useContracts } from "hooks/useConracts";
 import { useEffect } from "react";
 import { batch, useDispatch } from "react-redux";
 import { setAuth, setWeb3, setWeb3Account } from "store/slicers/global";
@@ -7,6 +8,7 @@ import { setAuth, setWeb3, setWeb3Account } from "store/slicers/global";
 export const useWalletEvents = () => {
   const { connector } = useAccounts();
   const dispatch = useDispatch();
+  const { setContracts } = useContracts();
 
   useEffect(() => {
     if (!connector) return;
@@ -32,6 +34,7 @@ export const useWalletEvents = () => {
             address,
           })
         );
+        setContracts(provider);
       };
       updateProvider();
     });

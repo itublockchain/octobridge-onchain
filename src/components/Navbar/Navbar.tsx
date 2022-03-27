@@ -1,4 +1,4 @@
-import { Button } from "ui";
+import { Button, Typography } from "ui";
 import { Container } from "ui/Container/Container";
 import styles from "./Navbar.module.scss";
 import LogoRed from "assets/images/logo-red.png";
@@ -14,6 +14,7 @@ import { useMemo } from "react";
 import { CHAINS } from "contract/chains";
 import { NETWORK_IMAGE_MAP } from "contract/networks";
 import Unknown from "assets/images/unknown.png";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const { auth, address, chainId } = useAccounts();
@@ -21,6 +22,7 @@ const Navbar = () => {
     autologin: false,
   });
   const { currentTheme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
 
   const network = useMemo(() => {
     let network = null;
@@ -36,10 +38,21 @@ const Navbar = () => {
 
   return (
     <Container maxWidth={1200} className={styles.wrapper}>
-      <img
-        src={currentTheme === "dark" ? LogoWhite : LogoRed}
-        className={styles.logo}
-      />
+      <div className={styles.items}>
+        <img
+          src={currentTheme === "dark" ? LogoWhite : LogoRed}
+          className={styles.logo}
+        />
+        {/*   <Typography
+          onClick={() => navigate("/nft")}
+          className={styles.itemsItem}
+          variant="body1"
+          weight="semibold"
+        >
+          NFT Bridge
+        </Typography> */}
+      </div>
+
       <div className={styles.buttons}>
         {auth ? (
           <Button

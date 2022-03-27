@@ -2,22 +2,22 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Contract } from "ethers";
 
 type ContractState = {
-  USDC: Contract | null;
+  OCTOBRIDGE20: Contract | null;
 };
 
 const initialState: ContractState = {
-  USDC: null,
+  OCTOBRIDGE20: null,
 };
 
 export const contractSlicer = createSlice({
   name: "contacts",
   initialState,
   reducers: {
-    setUSDCContract: (state, action: PayloadAction<any>) => {
-      state.USDC = action.payload;
+    setOCTOBRIDGE20Contract: (state, action: PayloadAction<any>) => {
+      state.OCTOBRIDGE20 = action.payload;
     },
   },
 });
 
-export const { setUSDCContract } = contractSlicer.actions;
+export const { setOCTOBRIDGE20Contract } = contractSlicer.actions;
 export default contractSlicer.reducer;

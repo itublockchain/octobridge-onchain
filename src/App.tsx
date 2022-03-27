@@ -1,6 +1,7 @@
 import { Bridge, Navbar } from "components";
 import { useTheme } from "hooks/useTheme";
 import { useWalletEvents } from "hooks/useWalletEvents";
+import { NftBridge } from "pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +24,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<MainApp />} />
+          <Route path="/nft" element={<NftBridge />} />
         </Routes>
       </BrowserRouter>
       <ToastContainer

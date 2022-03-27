@@ -1,0 +1,31 @@
+.img {
+  max-width: 100%;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+}
+
+.button {
+  margin-top: 0.5rem;
+}
+
+.modal {
+  padding: 24px 12px;
+  width: 312px;
+  display: flex;
+  flex-direction: column;
+}
+
+.networks {
+  overflow-y: auto;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.networkEach {
+  cursor: pointer;
+  padding: 12px 12px;
+}

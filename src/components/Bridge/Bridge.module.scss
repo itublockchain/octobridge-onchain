@@ -113,6 +113,7 @@
 .tokenWrapper {
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 @media (min-width: 768px) {

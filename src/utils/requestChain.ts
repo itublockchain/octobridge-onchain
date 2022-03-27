@@ -1,4 +1,4 @@
-export const requestChain = async (chainId: any) => {
+export const requestChain = async (chainId: any, rpc: any, name: any) => {
   try {
     await window.ethereum.request({
       method: "wallet_switchEthereumChain",
@@ -16,6 +16,8 @@ export const requestChain = async (chainId: any) => {
           params: [
             {
               chainId: `0x${chainId?.toString(16)}`,
+              rpcUrls: [rpc],
+              chainName: name,
             },
           ],
         });
