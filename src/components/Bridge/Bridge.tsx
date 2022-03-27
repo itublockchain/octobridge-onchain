@@ -9,11 +9,6 @@ import { CgArrowsExchangeV } from "react-icons/cg";
 import { TOKENS } from "contract/tokenList";
 import { NETWORKS, NETWORK_IMAGE_MAP } from "contract/networks";
 import { clsnm } from "utils/clsnm";
-import {
-  apiGetNetworks,
-  apiGetTokens,
-  apiRegisterToken,
-} from "services/request";
 import ARML1 from "assets/images/arms/l1.png";
 import ARML2 from "assets/images/arms/l2.png";
 import ARML3 from "assets/images/arms/l3.png";
@@ -54,6 +49,7 @@ const Bridge = () => {
   const { signer, auth, address, chainId, provider } = useAccounts();
   const [isClaimable, setIsClaimable] = useState(false);
   const [time, setTime] = useState(0);
+  const [hide, setHide] = useState(false);
 
   const [claims, setClaims] = useState<any>([]);
 
@@ -251,14 +247,17 @@ const Bridge = () => {
       const txn = await OCTOBRIDGE20_CONTRACT.connect(signer).claim({
         gasLimit: 2000000,
       });
-      await txn.wait();
-      toast("Claim is successful");
-      setClaimLoading(false);
+      setTimeout(() => {
+        toast("Claim is successful");
+        setClaimLoading(false);
+        setHide(true);
+        setIsClaimable(false);
+      }, 9000);
     } catch (err) {
+      toast("Transaction failed");
       setClaimLoading(false);
     }
   };
-
   return (
     <>
       <NetworkModal
@@ -462,7 +461,7 @@ const Bridge = () => {
           >
             Transfer
           </Button>
-          {isClaimable && (
+          {isClaimable && !hide && (
             <Button
               loading={claimLoading}
               onClick={async () => await claim()}
