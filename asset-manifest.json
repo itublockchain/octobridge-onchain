@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/octobridge-onchain/static/css/main.ef624976.chunk.css",
-    "main.js": "/octobridge-onchain/static/js/main.84d00e37.chunk.js",
-    "main.js.map": "/octobridge-onchain/static/js/main.84d00e37.chunk.js.map",
+    "main.js": "/octobridge-onchain/static/js/main.4ddbce1e.chunk.js",
+    "main.js.map": "/octobridge-onchain/static/js/main.4ddbce1e.chunk.js.map",
     "runtime-main.js": "/octobridge-onchain/static/js/runtime-main.a249c84d.js",
     "runtime-main.js.map": "/octobridge-onchain/static/js/runtime-main.a249c84d.js.map",
     "static/css/2.f4c56af9.chunk.css": "/octobridge-onchain/static/css/2.f4c56af9.chunk.css",
@@ -34,6 +34,6 @@
     "static/css/2.f4c56af9.chunk.css",
     "static/js/2.a0806bec.chunk.js",
     "static/css/main.ef624976.chunk.css",
-    "static/js/main.84d00e37.chunk.js"
+    "static/js/main.4ddbce1e.chunk.js"
   ]
 }
