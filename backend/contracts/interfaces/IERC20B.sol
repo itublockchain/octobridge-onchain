@@ -73,6 +73,10 @@ interface IERC20B {
 
     function mint(address to, uint256 amount) external;
 
+    function name() external view returns (string memory);
+    
+    function symbol() external view returns (string memory);
+
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
      * another (`to`).

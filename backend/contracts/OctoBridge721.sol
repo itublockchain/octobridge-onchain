@@ -1,18 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "./OctoToken721.sol";
 import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "./interfaces/IERC721B.sol";
+import "./interfaces/ILZ.sol";
 
-contract Octo721 is Ownable, ERC721Holder {
-    using ECDSA for bytes32;
-
+contract Octo721 is ERC721Holder {
     uint16 immutable chainID;
-    address public signer;
     uint256 private txNonces;
+    LayerZero private lZero;
     mapping(address => Token) public tokens;
     mapping(uint256 => address) public nftOwners;
     mapping(bytes32 => address) public initialized;
@@ -23,20 +20,21 @@ contract Octo721 is Ownable, ERC721Holder {
         address originAddress;
     }
 
-    event TokenLocked(address indexed _user, uint16 _chainID, uint256 _nonce, uint16 _destChainID, uint256 _id, uint16 _originChainID, address _originAddress);
-    event TokenClaimed(address indexed _user, uint16 _chain, address _tokenAddress, uint256 _id);
-
-    constructor(uint16 _chainID, address _signer) {
+    constructor(uint16 _chainID, address _lz) {
         chainID = _chainID;
-        signer = _signer;
+        lZero = LayerZero(_lz);
     }
+
+    fallback() external payable {}
+    receive() external payable {}
 
     function lock(        
         uint16 _originChain,
         uint16 _destination,
+        uint16 _dstChainId,
         address _tokenAddress,
         uint256 _id
-    ) external {
+    ) external payable {
         IERC721B nft = IERC721B(_tokenAddress);
         Token storage TokenInfo = tokens[_tokenAddress];
 
@@ -51,54 +49,84 @@ contract Octo721 is Ownable, ERC721Holder {
             nft.burn(_id);
         }
 
-        emit TokenLocked(msg.sender, chainID, txNonces, _destination, _id, _originChain, TokenInfo.originAddress);
+        uint256 sum;
+        unchecked {
+            sum += chainID * 2**32;
+            sum += _destination * 2**16;
+            sum += _originChain;
+        }
+
+        lZero.sendTxInfo{value: msg.value}(
+            _dstChainId,
+            abi.encodePacked(address(lZero)),
+            msg.sender,
+            sum,
+            txNonces,
+            _id,
+            TokenInfo.originAddress,
+            nft.name(),
+            nft.symbol()
+        );
+
         txNonces++;
     }
 
-    function claim(        
-        uint16 _originChain,
-        uint256 _nonce,
-        uint16 _midChain,
-        address _originAddress,
-        uint256 _id,
-        bytes memory _signature,
-        string memory _name,
-        string memory _symbol
-    ) external {
-        bytes32 _hash = keccak256(abi.encodePacked(msg.sender, _midChain, chainID, _id, _originChain, _nonce, _originAddress, _name, _symbol));
-        require(_hash.toEthSignedMessageHash().recover(_signature) == signer, "[claim] Couldn't verify signature.");
-        require(!hashes[_hash], "[claim] Already claimed.");
-        hashes[_hash] = true;
+    function claim() external {
+        // Check for tx
+        Tx memory userTx = lZero.txs(msg.sender);
+        require(userTx.amount == 0, "[claim] Tx doesn't exist");
 
-        if(_originChain == chainID) {
-            IERC721B nft = IERC721B(_originAddress);
-            require(nftOwners[_id] != address(0), "[claim] Token not available.");
-            delete(nftOwners[_id]);
-            nft.transferFrom(address(this), msg.sender, _id);
+        // Evaluate transaction
+        uint16 txOriginChainId; 
+        unchecked { txOriginChainId = uint16(userTx.IDs / 2 ** 32); }
+
+        address txOriginAddress = userTx.originAddress;
+        uint256 txId = userTx.amount;
+
+        uint16 tmpChainId;
+        unchecked { tmpChainId = uint16(userTx.IDs % 2**16); }
+        uint chid;
+        unchecked{chid = userTx.IDs / 2 ** 32;}
+
+        require(!hashes[keccak256(abi.encodePacked(chid, userTx.nonce))], "[claim] Tx already submitted.");
+
+        if(chainID == uint16(userTx.IDs % 10**16)) {
+            IERC721B nft = IERC721B(txOriginAddress);
+            require(nftOwners[txId] != address(0), "[claim] Token not available.");
+            delete(nftOwners[txId]);
+            nft.safeTransferFrom(address(this), msg.sender, txId);
         } else {
-            address _tokenAddress = initialized[keccak256(abi.encodePacked(_originChain, _originAddress))];
-            if(_tokenAddress != address(0)){
-                IERC721B nft = IERC721B(_tokenAddress);
-                nft.safeMint(msg.sender, _id);
-            } else {
-                OctoToken721 newOcto = new OctoToken721(_name, _symbol);
-                newOcto.safeMint(msg.sender, _id);
-                initialized[keccak256(abi.encodePacked(_originChain, _originAddress))] = address(newOcto);
-                Token storage TokenInfo = tokens[address(newOcto)];
-                TokenInfo.originChain = _originChain;
-                TokenInfo.originAddress = _originAddress;
+            // Try to retrieve token address
+            address tokenAddress = initialized[keccak256(abi.encodePacked(txOriginChainId, txOriginAddress))];
+            if(tokenAddress != address(0)) {
+                IERC721B nft = IERC721B(tokenAddress);
+                nft.safeMint(msg.sender, txId);
+            }
+            // Otherwise create a new token
+            else {
+                string memory name = userTx.name;
+                string memory symbol = userTx.symbol;
+                if(txOriginChainId == userTx.IDs % 10 ** 32) {
+                    name = string.concat(name, " Octo");
+                    symbol = string.concat(symbol, ".o");
+                }
+                OctoToken721 newToken = new OctoToken721(name, symbol);                
+                newToken.safeMint(msg.sender, txId);
+
+                // Save token
+                initialized[keccak256(abi.encodePacked(txOriginChainId, txOriginAddress))] = address(newToken);
+                
+                Token storage tokenInfo = tokens[address(newToken)];
+                tokenInfo.originChain = txOriginChainId;
+                tokenInfo.originAddress = txOriginAddress;
             }
         }
 
-        emit TokenClaimed(msg.sender, chainID, initialized[keccak256(abi.encodePacked(_originChain, _originAddress))], _id);
+        hashes[keccak256(abi.encodePacked(chid, userTx.nonce))] = true;
     }
 
     function isOrigin(address _tokenAddress) public view returns (bool) {
         Token memory _token = tokens[_tokenAddress];
         return (_token.originChain == chainID);
-    }
-
-    function changeSigner(address _newSigner) external onlyOwner {
-        signer = _newSigner;
     }
 }

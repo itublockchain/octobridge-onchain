@@ -94,6 +94,8 @@ interface IERC721B {
 
     function burn(uint256 tokenId) external;
     function safeMint(address to, uint256 tokenId) external;
+    function name() external view returns (string memory);
+    function symbol() external view returns (string memory);
 
     /**
      * @dev Returns the account approved for `tokenId` token.
