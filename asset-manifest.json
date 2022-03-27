@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/octobridge-onchain/static/css/main.4230921d.chunk.css",
-    "main.js": "/octobridge-onchain/static/js/main.7d1ed1b1.chunk.js",
-    "main.js.map": "/octobridge-onchain/static/js/main.7d1ed1b1.chunk.js.map",
+    "main.js": "/octobridge-onchain/static/js/main.7cb0a1ff.chunk.js",
+    "main.js.map": "/octobridge-onchain/static/js/main.7cb0a1ff.chunk.js.map",
     "runtime-main.js": "/octobridge-onchain/static/js/runtime-main.a249c84d.js",
     "runtime-main.js.map": "/octobridge-onchain/static/js/runtime-main.a249c84d.js.map",
     "static/css/2.f4c56af9.chunk.css": "/octobridge-onchain/static/css/2.f4c56af9.chunk.css",
-    "static/js/2.4a1cac76.chunk.js": "/octobridge-onchain/static/js/2.4a1cac76.chunk.js",
-    "static/js/2.4a1cac76.chunk.js.map": "/octobridge-onchain/static/js/2.4a1cac76.chunk.js.map",
+    "static/js/2.612bffdb.chunk.js": "/octobridge-onchain/static/js/2.612bffdb.chunk.js",
+    "static/js/2.612bffdb.chunk.js.map": "/octobridge-onchain/static/js/2.612bffdb.chunk.js.map",
     "static/js/3.089f0223.chunk.js": "/octobridge-onchain/static/js/3.089f0223.chunk.js",
     "static/js/3.089f0223.chunk.js.map": "/octobridge-onchain/static/js/3.089f0223.chunk.js.map",
     "index.html": "/octobridge-onchain/index.html",
     "static/css/2.f4c56af9.chunk.css.map": "/octobridge-onchain/static/css/2.f4c56af9.chunk.css.map",
     "static/css/main.4230921d.chunk.css.map": "/octobridge-onchain/static/css/main.4230921d.chunk.css.map",
-    "static/js/2.4a1cac76.chunk.js.LICENSE.txt": "/octobridge-onchain/static/js/2.4a1cac76.chunk.js.LICENSE.txt",
+    "static/js/2.612bffdb.chunk.js.LICENSE.txt": "/octobridge-onchain/static/js/2.612bffdb.chunk.js.LICENSE.txt",
     "static/media/avax.e1fb45e8.png": "/octobridge-onchain/static/media/avax.e1fb45e8.png",
     "static/media/index.scss": "/octobridge-onchain/static/media/background_light.fd75a50e.png",
     "static/media/head.27b8262c.png": "/octobridge-onchain/static/media/head.27b8262c.png",
@@ -32,8 +32,8 @@
   "entrypoints": [
     "static/js/runtime-main.a249c84d.js",
     "static/css/2.f4c56af9.chunk.css",
-    "static/js/2.4a1cac76.chunk.js",
+    "static/js/2.612bffdb.chunk.js",
     "static/css/main.4230921d.chunk.css",
-    "static/js/main.7d1ed1b1.chunk.js"
+    "static/js/main.7cb0a1ff.chunk.js"
   ]
 }
