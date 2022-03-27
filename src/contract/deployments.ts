@@ -1,12 +1,17 @@
 export const DEPLOYMENTS = {
+  "4": {
+    layerZeroAddress: "0xD9456117d4533310f36C43c3e27A3fcCc1be760F",
+    erc20BridgeAddress: "0x2885003cb3843aCcc3778032A099899cCB4604E5",
+    erc721BridgeAddress: "0xD348EE832e6edFbc1E4f72A88BC1cd5dBf066B53",
+  },
   "43113": {
-    layerZeroAddress: "0xB6eE300827cb78ba92A325a29b933A6458A8e443",
-    erc20BridgeAddress: "0x354e517A3f464a14267DEB5eE159A85dc3c8eEDC",
-    erc721BridgeAddress: "0xE4357c8bDE6e08fcadd002e7fCbd1Cffbb789d97",
+    layerZeroAddress: "0xDd0F064F6CB78F1aF21348eA05486596E9A18E01",
+    erc20BridgeAddress: "0x0aaF39AC5F3cDe5df45250c6BDb0ca4871925D61",
+    erc721BridgeAddress: "0x6Bcd73950CF19be3E7b6c8904dFD0f6A7CB7473D",
   },
   "80001": {
-    layerZeroAddress: "0xa14B1c89Dc6BcB34e533844d2e054fd78592F53b",
-    erc20BridgeAddress: "0xa28A62021268b4d66CCc2C44449eFF5301573621",
-    erc721BridgeAddress: "0x19d8cbeb3b64127b54d0C04b8b056ea2fe4c61a1",
+    layerZeroAddress: "0x02bb0De81084bF6E1165d08C0cB4DBdB95858dF6",
+    erc20BridgeAddress: "0x08ab3352452a952a1fA5Abe69C21530B48f829A5",
+    erc721BridgeAddress: "0x34599983E41784617fc2C6935d9485995fD892c1",
   },
 };

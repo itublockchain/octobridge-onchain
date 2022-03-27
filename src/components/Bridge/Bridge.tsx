@@ -7,7 +7,7 @@ import Unknown from "assets/images/unknown.png";
 import { useEffect, useState } from "react";
 import { CgArrowsExchangeV } from "react-icons/cg";
 import { TOKENS } from "contract/tokenList";
-import { NETWORK_IMAGE_MAP } from "contract/networks";
+import { NETWORKS, NETWORK_IMAGE_MAP } from "contract/networks";
 import { clsnm } from "utils/clsnm";
 import {
   apiGetNetworks,
@@ -63,7 +63,7 @@ const Bridge = () => {
   const [tokensIn, setTokensIn] = useState([]);
   const [tokensOut, setTokensOut] = useState([]);
 
-  const networksReq = useApiRequest(apiGetNetworks, {
+  /*   const networksReq = useApiRequest(apiGetNetworks, {
     onSuccess: (res: any) => {
       const arr: any = [];
       Object.keys(res.data).forEach((item) => {
@@ -73,9 +73,9 @@ const Bridge = () => {
       setNetworkIn(arr.filter((item: any) => item.networkId === 43113)[0]);
       setNetworkOut(arr.filter((item: any) => item.networkId === 80001)[0]);
     },
-  });
+  }); */
 
-  const tokenReq = useApiRequest(
+  /* const tokenReq = useApiRequest(
     (params: any, direction) => apiGetTokens(params),
     {
       onSuccess: (res: any, params, direction) => {
@@ -98,39 +98,34 @@ const Bridge = () => {
         }
       },
     }
-  );
+  ); */
 
   useEffect(() => {
     try {
-      networksReq.exec();
+      const arr: any = [];
+      Object.keys(NETWORKS).forEach((item) => {
+        arr.push(NETWORKS[item]);
+      });
+      setNetworks(arr);
+      setNetworkIn(arr.filter((item: any) => item.networkId === 43113)[0]);
+      setNetworkOut(arr.filter((item: any) => item.networkId === 80001)[0]);
     } catch {}
-  }, []);
+  }, [auth]);
 
   useEffect(() => {
     try {
       if ("networkId" in networkIn) {
-        tokenReq.exec({ networkId: networkIn.networkId }, "in");
-        if (auth) {
-          requestChain(networkIn?.networkId, networkIn?.rpc, networkIn?.name);
+        if (chainId === 43113) {
+          setTokenIn(TOKENS[0]);
+          setTokensIn(TOKENS);
+        } else {
+          setTokenIn({});
+          setTokensIn([]);
         }
+        //tokenReq.exec({ networkId: networkIn.networkId }, "in");
       }
     } catch {}
-  }, [networkIn]);
-
-  useEffect(() => {
-    try {
-      if ("networkId" in networkOut) {
-        tokenReq.exec({ networkId: networkOut?.networkId }, "out");
-      }
-    } catch {}
-  }, [networkOut]);
-
-  const registerTokenReq = useApiRequest((data) => apiRegisterToken(data), {
-    onSuccess: (res) => {
-      toast("Token added successfully");
-      networksReq.exec();
-    },
-  });
+  }, [networkIn, auth, chainId]);
 
   useEffect(() => {
     if (!auth) {
@@ -236,7 +231,9 @@ const Bridge = () => {
         { value: parseEther("0.5") }
       );
       await txn.wait();
+      toast("Transfer is successful");
       setLoading(false);
+      setAmountIn("");
     } catch (err) {
       console.log(err);
     }
@@ -251,9 +248,10 @@ const Bridge = () => {
         provider
       );
       const txn = await OCTOBRIDGE20_CONTRACT.connect(signer).claim({
-        gasLimit: 20000000,
+        gasLimit: 2000000,
       });
       await txn.wait();
+      toast("Claim is successful");
       setClaimLoading(false);
     } catch (err) {
       setClaimLoading(false);
@@ -443,7 +441,7 @@ const Bridge = () => {
                   style={{ marginRight: "0.5rem", borderRadius: "50%" }}
                   src={tokenIn?.logoURI || Unknown}
                 />
-                {tokenIn.symbol}
+                {tokenIn?.symbol}
               </div>
             </div>
           </div>
@@ -454,7 +452,8 @@ const Bridge = () => {
               tokensIn?.length <= 0 ||
               !auth ||
               claims?.length > 0 ||
-              chainId !== networkIn?.networkId
+              chainId !== networkIn?.networkId ||
+              !amountIn
             }
             style={{ marginTop: "32px" }}
             size="xl"

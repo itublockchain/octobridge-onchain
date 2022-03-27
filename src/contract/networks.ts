@@ -1,44 +1,36 @@
 import Avax from "assets/images/avax.png";
 import Rinkeby from "assets/images/rinkeby.png";
 
-export const NETWORKS = [
-  {
-    chainId: 43113,
-    chainName: "Avalanche",
-    nativeCurrency: {
-      name: "Avax",
-      symbol: "AVAX",
-      decimals: 18,
+export const NETWORKS = {
+  4: {
+    name: "Rinkeby",
+    layerZero: {
+      id: 10001,
+      endpoint: "0x79a63d6d8BBD5c6dfc774dA79bCcD948EAcb53FA",
     },
-    logo: Avax,
-    blockExplorerUrls: ["https://testnet.snowtrace.io/"],
-    rpcUrls: "https://api.avax-test.network/ext/bc/C/rpc",
+    networkId: 4,
+    rpc: "https://rinkeby.infura.io/v3/5f6507414db54d61b6cfe765b8b231c1",
   },
-  {
-    chainId: 73771,
-    chainName: "Swimmer",
-    nativeCurrency: {
-      name: "Tus",
-      symbol: "Tus.e",
-      decimals: 18,
+  43113: {
+    name: "Fuji",
+    layerZero: {
+      id: 10006,
+      endpoint: "0x93f54D755A063cE7bB9e6Ac47Eccc8e33411d706",
     },
-    blockExplorerUrls: ["https://testnet-explorer.swimmer.network/"],
-    rpcUrls:
-      "https://testnet-rpc.swimmer.network/ext/bc/2Sk6j8TYVQc2oR1TtUz64EWHAYjDUoDQ4hpbu6FMN2JBKC77xa/rpc",
+    networkId: 43113,
+    rpc: "https://api.avax-test.network/ext/bc/C/rpc",
   },
-  {
-    chainId: 73772,
-    chainName: "Ferhadır",
-    nativeCurrency: {
-      name: "Ferha",
-      symbol: "FER",
-      decimals: 18,
+  80001: {
+    name: "Mumbai",
+    layerZero: {
+      id: 10009,
+      endpoint: "0xf69186dfBa60DdB133E91E9A4B5673624293d8F8",
     },
-    blockExplorerUrls: ["https://testnet-explorer.swimmer.network/"],
-    rpcUrls:
-      "https://testnet-rpc.swimmer.network/ext/bc/2Sk6j8TYVQc2oR1TtUz64EWHAYjDUoDQ4hpbu6FMN2JBKC77xa/rpc",
+    networkId: 80001,
+    rpc: "https://rpc-mumbai.matic.today",
   },
-];
+};
+
 
 export const NETWORK_IMAGE_MAP = {
   Fuji: Avax,
