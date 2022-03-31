@@ -244,15 +244,9 @@ const Bridge = () => {
         OCTOBRIDGE20,
         provider
       );
-      const txn = await OCTOBRIDGE20_CONTRACT.connect(signer).claim({
-        gasLimit: 2000000,
-      });
-      setTimeout(() => {
-        toast("Claim is successful");
-        setClaimLoading(false);
-        setHide(true);
-        setIsClaimable(false);
-      }, 9000);
+      const txn = await OCTOBRIDGE20_CONTRACT.connect(signer).claim();
+      await txn.wait();
+      setClaimLoading(false);
     } catch (err) {
       toast("Transaction failed");
       setClaimLoading(false);
@@ -461,7 +455,7 @@ const Bridge = () => {
           >
             Transfer
           </Button>
-          {isClaimable && !hide && (
+          {isClaimable && (
             <Button
               loading={claimLoading}
               onClick={async () => await claim()}
