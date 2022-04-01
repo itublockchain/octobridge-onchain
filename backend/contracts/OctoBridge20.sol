@@ -3,15 +3,20 @@ pragma solidity ^0.8.0;
 
 import "./OctoToken20.sol";
 import "./interfaces/IERC20B.sol";
-import "./interfaces/ILZ.sol";
+import "./LayerZero.sol";
 
 contract Octo20 {
     uint16 immutable chainID;
     uint256 private txNonces;
-    LayerZero private lZero;
+    TxRelayer private lZero;
     mapping(address => Token) public tokens;
     mapping(bytes32 => address) public initialized;
     mapping(bytes32 => bool) private hashes;
+
+    event log_1(uint256);
+    event log_2(uint256, uint256);
+    event log_3(uint256, uint256, uint256);
+    event log_4(uint256, uint256, uint256, uint256);
 
     struct Token {
         uint16 originChain;
@@ -19,9 +24,9 @@ contract Octo20 {
         uint256 lockedBalance;
     }
 
-    constructor(uint16 _chainID, address _lz) {
+    constructor(uint16 _chainID, address payable _lz) {
         chainID = _chainID;
-        lZero = LayerZero(_lz);
+        lZero = TxRelayer(_lz);
     }
 
     fallback() external payable {}
@@ -73,24 +78,34 @@ contract Octo20 {
         txNonces++;
     }
 
+
+
     function claim() external {
         // Check for tx
-        Tx memory userTx = lZero.txs(msg.sender);
-        require(userTx.amount == 0, "[claim] Tx doesn't exist");
+        (
+            address txUser, 
+            address txOriginAddress, 
+            uint256 txIds, 
+            uint256 txNonce,
+            uint256 txAmount,
+            string memory txName,    
+            string memory txSymbol    
+        ) = lZero.txs(msg.sender);
+
+        require(txUser == msg.sender, "[claim] invalid caller");
+        require(txAmount != 0, "[claim] Tx doesn't exist");
 
         // Evaluate transaction
         uint16 txOriginChainId; 
-        unchecked { txOriginChainId = uint16(userTx.IDs / 2 ** 32); }
-
-        address txOriginAddress = userTx.originAddress;
-        uint256 txAmount = userTx.amount;
+        unchecked { txOriginChainId = uint16(txIds / 2 ** 32); }
 
         uint16 tmpChainId;
-        unchecked { tmpChainId = uint16(userTx.IDs % 2**16); }
-        uint chid;
-        unchecked{chid = userTx.IDs / 2 ** 32;}
+        unchecked { tmpChainId = uint16(txIds % 2**16); }
+        
+        uint256 chid;
+        unchecked{chid = txIds / 2 ** 32;}
 
-        require(!hashes[keccak256(abi.encodePacked(chid, userTx.nonce))], "[claim] Tx already submitted.");
+        require(!hashes[keccak256(abi.encodePacked(chid, txNonce))], "[claim] Tx already submitted.");
 
         if(chainID == tmpChainId) {
             Token storage tokenInfo = tokens[txOriginAddress];
@@ -107,16 +122,18 @@ contract Octo20 {
             if(tokenAddress != address(0)) {
                 IERC20B token = IERC20B(tokenAddress);
                 token.mint(msg.sender, txAmount);
+
+                emit log_3(1,2,1);
             }
             // Otherwise create a new token
             else {
-                string memory name = userTx.name;
-                string memory symbol = userTx.symbol;
-                if(txOriginChainId == userTx.IDs % 2 ** 32) {
-                    name = string.concat(name, " Octo");
-                    symbol = string.concat(symbol, ".o");
-                }
-                OctoToken20 newToken = new OctoToken20(name, symbol);
+                // string memory name = txName;
+                // string memory symbol = txSymbol;
+                // if(txOriginChainId == txIds % 2 ** 32) {
+                //     name = string.concat(name, " Octo");
+                //     symbol = string.concat(symbol, ".o");
+                // }
+                OctoToken20 newToken = new OctoToken20(txName, txSymbol);
                 newToken.mint(msg.sender, txAmount);
                 
                 // Save token
@@ -128,7 +145,8 @@ contract Octo20 {
             }
         }
 
-        hashes[keccak256(abi.encodePacked(chid, userTx.nonce))] = true;
+        hashes[keccak256(abi.encodePacked(chid, txNonce))] = true;
+        lZero.resetTxInfo(msg.sender);
     }
     
     function isOrigin(address _tokenAddress) public view returns (bool) {

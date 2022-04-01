@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 struct Tx {
         address user;
@@ -34,6 +34,6 @@ function sendTxInfo(
 
 function resetTxInfo(address _user) external;
 
-function txs(address _user) external returns (Tx memory);
+function txs(address _user) external view returns (Tx memory);
 
 }

@@ -14,7 +14,7 @@ contract TxRelayer is Ownable, ILayerZeroReceiver, ILayerZeroUserApplicationConf
 
     struct Tx {
         address user;
-        address mainAddress;
+        address originAddress;
         uint256 IDs;
         // uint16 chainID;
         // uint16 destChainID;
@@ -33,11 +33,6 @@ contract TxRelayer is Ownable, ILayerZeroReceiver, ILayerZeroUserApplicationConf
     constructor(address _endpoint) {
         endpoint = ILayerZeroEndpoint(_endpoint);
         allowed[msg.sender] = true;
-    }
-
-    function resetTxInfo(address user) external {
-        require(allowed[msg.sender],"Contract is not allowed");
-        delete txs[user];
     }
 
     // Allow access for bridge, only owner can call it
@@ -104,15 +99,20 @@ contract TxRelayer is Ownable, ILayerZeroReceiver, ILayerZeroUserApplicationConf
         // uint16 _destChainID, 
         uint256 _amount, 
         // uint16 _mainChainID, 
-        address _mainAddress,
+        address _originAddress,
         string memory _name,
         string memory _symbol
     ) public payable {
         require(allowed[msg.sender], "Contract isn't allowed");
 
         // Pack and send message to endpoint
-        bytes memory trial = abi.encode(_user, IDs, _nonce, _amount, _mainAddress, _name, _symbol);
+        bytes memory trial = abi.encode(_user, IDs, _nonce, _amount, _originAddress, _name, _symbol);
         endpoint.send{value: msg.value}(_dstChainId, _dstContractAddress, trial, payable(msg.sender), address(0x0), bytes(""));
+    }
+
+    function resetTxInfo(address user) external {
+        require(allowed[msg.sender], "Contract isn't allowed");
+        delete txs[user];
     }
     
     // LAYER 0 CONFIGURATION
