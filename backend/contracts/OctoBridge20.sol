@@ -12,12 +12,8 @@ contract Octo20 {
     mapping(address => Token) public tokens;
     mapping(bytes32 => address) public initialized;
     mapping(bytes32 => bool) private hashes;
-
-    event log_1(uint256);
-    event log_2(uint256, uint256);
-    event log_3(uint256, uint256, uint256);
-    event log_4(uint256, uint256, uint256, uint256);
-
+    
+    
     struct Token {
         uint16 originChain;
         address originAddress;
@@ -122,8 +118,6 @@ contract Octo20 {
             if(tokenAddress != address(0)) {
                 IERC20B token = IERC20B(tokenAddress);
                 token.mint(msg.sender, txAmount);
-
-                emit log_3(1,2,1);
             }
             // Otherwise create a new token
             else {
